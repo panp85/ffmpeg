@@ -108,6 +108,7 @@ static int tcp_open(URLContext *h, const char *uri, int flags)
     snprintf(portstr, sizeof(portstr), "%d", port);
     if (s->listen)
         hints.ai_flags |= AI_PASSIVE;
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in tcp_open, hostname = %s.\n", hostname);
     if (!hostname[0])
         ret = getaddrinfo(NULL, portstr, &hints, &ai);
     else
@@ -120,6 +121,7 @@ static int tcp_open(URLContext *h, const char *uri, int flags)
     }
 
     cur_ai = ai;
+	
 
  restart:
     fd = ff_socket(cur_ai->ai_family,
@@ -129,6 +131,7 @@ static int tcp_open(URLContext *h, const char *uri, int flags)
         ret = ff_neterrno();
         goto fail;
     }
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in tcp_open, s->listen = %d.\n", s->listen);
 
     if (s->listen == 2) {
         // multi-client
@@ -218,11 +221,14 @@ static int tcp_write(URLContext *h, const uint8_t *buf, int size)
     int ret;
 
     if (!(h->flags & AVIO_FLAG_NONBLOCK)) {
+//		av_log(NULL, AV_LOG_ERROR, "panpan test, in tcp_write, AVIO_FLAG_NONBLOCK no.\n");
         ret = ff_network_wait_fd_timeout(s->fd, 1, h->rw_timeout, &h->interrupt_callback);
         if (ret)
             return ret;
     }
-    ret = send(s->fd, buf, size, MSG_NOSIGNAL);
+/*	else
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in tcp_write, AVIO_FLAG_NONBLOCK yes.\n");
+  */  ret = send(s->fd, buf, size, MSG_NOSIGNAL);
     return ret < 0 ? ff_neterrno() : ret;
 }
 

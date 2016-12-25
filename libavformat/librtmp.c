@@ -99,6 +99,7 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
     int rc = 0, level;
     char *filename = s->filename;
     int len = strlen(s->filename) + 1;
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_open librtmp.c, go in.\n");
 
     switch (av_log_get_level()) {
     default:

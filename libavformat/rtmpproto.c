@@ -2584,10 +2584,10 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
     int port;
     AVDictionary *opts = NULL;
     int ret;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_open rtmpproto.c, go in.\n");
     if (rt->listen_timeout > 0)
         rt->listen = 1;
-
+   
     rt->is_input = !(flags & AVIO_FLAG_WRITE);
 
     av_url_split(proto, sizeof(proto), auth, sizeof(auth),
@@ -2640,12 +2640,15 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
         if (port < 0)
             port = RTMP_DEFAULT_PORT;
         if (rt->listen)
+        {
             ff_url_join(buf, sizeof(buf), "tcp", NULL, hostname, port,
                         "?listen&listen_timeout=%d",
                         rt->listen_timeout * 1000);
-        else
+        }
+		else
             ff_url_join(buf, sizeof(buf), "tcp", NULL, hostname, port, NULL);
     }
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_open, buf = %s.\n", buf);
 
 reconnect:
     if ((ret = ffurl_open_whitelist(&rt->stream, buf, AVIO_FLAG_READ_WRITE,
@@ -2791,7 +2794,7 @@ reconnect:
     rt->server_bw = 2500000;
     rt->duration = 0;
 
-    av_log(s, AV_LOG_DEBUG, "Proto = %s, path = %s, app = %s, fname = %s\n",
+    av_log(s, AV_LOG_ERROR, "panpan test, in rtmp_open, Proto = %s, path = %s, app = %s, fname = %s\n",
            proto, path, rt->app, rt->playpath);
     if (!rt->listen) {
         if ((ret = gen_connect(s, rt)) < 0)

@@ -268,7 +268,9 @@ static const struct URLProtocol *url_find_protocol(const char *filename)
     av_strlcpy(proto_nested, proto_str, sizeof(proto_nested));
     if ((ptr = strchr(proto_nested, '+')))
         *ptr = '\0';
-
+    av_log(NULL, AV_LOG_ERROR, 
+		"panpan test, in url_find_protocol, proto_nested = %s, proto_str = %s.\n",
+		proto_nested, proto_str);
     protocols = ffurl_get_protocols(NULL, NULL);
     if (!protocols)
         return NULL;
