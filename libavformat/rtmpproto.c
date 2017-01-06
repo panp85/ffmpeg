@@ -1259,7 +1259,7 @@ static int rtmp_handshake(URLContext *s, RTMPContext *rt)
     av_log(s, AV_LOG_DEBUG, "Type answer %d\n", serverdata[0]);
     av_log(s, AV_LOG_DEBUG, "Server version %d.%d.%d.%d\n",
            serverdata[5], serverdata[6], serverdata[7], serverdata[8]);
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_handshake, rt->is_input = %d.\n", rt->is_input);
     if (rt->is_input && serverdata[5] >= 3) {
         server_pos = rtmp_validate_digest(serverdata + 1, 772);
         if (server_pos < 0)
@@ -2584,7 +2584,7 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
     int port;
     AVDictionary *opts = NULL;
     int ret;
-    av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_open rtmpproto.c, go in.\n");
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_open rtmpproto.c, go in, uri = %s.\n", uri);
     if (rt->listen_timeout > 0)
         rt->listen = 1;
    
@@ -2664,6 +2664,7 @@ reconnect:
     }
 
     rt->state = STATE_START;
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_open, go to rtmp_handshake.\n");
     if (!rt->listen && (ret = rtmp_handshake(s, rt)) < 0)
         goto fail;
     if (rt->listen && (ret = rtmp_server_handshake(s, rt)) < 0)

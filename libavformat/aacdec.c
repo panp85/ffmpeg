@@ -83,7 +83,7 @@ static int adts_aac_read_header(AVFormatContext *s)
     st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in adts_aac_read_header, go in.\n");
     st->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
     st->codecpar->codec_id   = s->iformat->raw_codec_id;
     st->need_parsing         = AVSTREAM_PARSE_FULL_RAW;

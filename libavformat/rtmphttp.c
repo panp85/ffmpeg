@@ -227,7 +227,7 @@ static int rtmp_http_open(URLContext *h, const char *uri, int flags)
             goto fail;
         }
     }
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_http_open, go to ffurl_connect.\n");
     /* open the http context */
     if ((ret = ffurl_connect(rt->stream, NULL)) < 0)
         goto fail;

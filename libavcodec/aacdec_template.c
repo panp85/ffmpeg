@@ -1123,12 +1123,15 @@ static av_cold int aac_decode_init(AVCodecContext *avctx)
 
     aacdec_init(ac);
 #if USE_FIXED
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in aac_decode_init, USE_FIXED yes.\n");
     avctx->sample_fmt = AV_SAMPLE_FMT_S32P;
 #else
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in aac_decode_init, USE_FIXED no.\n");
     avctx->sample_fmt = AV_SAMPLE_FMT_FLTP;
 #endif /* USE_FIXED */
 
     if (avctx->extradata_size > 0) {
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in aac_decode_init, avctx->extradata_size > 0.\n");
         if ((ret = decode_audio_specific_config(ac, ac->avctx, &ac->oc[1].m4ac,
                                                 avctx->extradata,
                                                 avctx->extradata_size * 8LL,
@@ -1138,7 +1141,7 @@ static av_cold int aac_decode_init(AVCodecContext *avctx)
         int sr, i;
         uint8_t layout_map[MAX_ELEM_ID*4][3];
         int layout_map_tags;
-
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in aac_decode_init, avctx->extradata_size <= 0.\n");
         sr = sample_rate_idx(avctx->sample_rate);
         ac->oc[1].m4ac.sampling_index = sr;
         ac->oc[1].m4ac.channels = avctx->channels;

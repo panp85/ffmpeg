@@ -1980,7 +1980,7 @@ static int init_complex_filters(void)
 static int configure_complex_filters(void)
 {
     int i, ret = 0;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in configure_complex_filters, nb_filtergraphs = %d.\n", nb_filtergraphs);
     for (i = 0; i < nb_filtergraphs; i++)
         if (!filtergraph_is_simple(filtergraphs[i]) &&
             (ret = configure_filtergraph(filtergraphs[i])) < 0)
@@ -2415,7 +2415,7 @@ loop_end:
         assert_file_overwrite(filename);
         av_log(NULL, AV_LOG_ERROR, 
 			"panpan test, in open_output_file, AVFMT_NOFILE no.\n");
-        /* open the file */
+        /* open the file*/ 
         if ((err = avio_open2(&oc->pb, filename, AVIO_FLAG_WRITE,
                               &oc->interrupt_callback,
                               &of->opts)) < 0) {
