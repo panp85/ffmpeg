@@ -202,13 +202,15 @@ AVInputFormat *av_probe_input_format3(AVProbeData *pd, int is_opened,
 
     fmt = NULL;
     while ((fmt1 = av_iformat_next(fmt1))) {
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in av_probe_input_format3, fmt1->name = %s.\n", fmt1->name);
         if (!is_opened == !(fmt1->flags & AVFMT_NOFILE) && strcmp(fmt1->name, "image2"))
             continue;
         score = 0;
         if (fmt1->read_probe) {
             score = fmt1->read_probe(&lpd);
+			av_log(NULL, AV_LOG_ERROR, "panpan test, in av_probe_input_format3, score = %d.\n", score);
             if (score)
-                av_log(NULL, AV_LOG_TRACE, "Probing %s score:%d size:%d\n", fmt1->name, score, lpd.buf_size);
+                av_log(NULL, AV_LOG_ERROR, "panpan test, Probing %s score:%d size:%d\n", fmt1->name, score, lpd.buf_size);
             if (fmt1->extensions && av_match_ext(lpd.filename, fmt1->extensions)) {
                 switch (nodat) {
                 case NO_ID3:
@@ -224,9 +226,15 @@ AVInputFormat *av_probe_input_format3(AVProbeData *pd, int is_opened,
                 }
             }
         } else if (fmt1->extensions) {
+        	av_log(NULL, AV_LOG_ERROR, 
+				"panpan test, in av_probe_input_format3, lpd.filename, fmt1->extensions = [%s,%s].\n",
+				lpd.filename, fmt1->extensions);
             if (av_match_ext(lpd.filename, fmt1->extensions))
                 score = AVPROBE_SCORE_EXTENSION;
         }
+		av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in av_probe_input_format3, lpd.mime_type, fmt1->mime_type = [%s,%s].\n",
+			lpd.mime_type, fmt1->mime_type);
         if (av_match_name(lpd.mime_type, fmt1->mime_type)) {
             if (AVPROBE_SCORE_MIME > score) {
                 av_log(NULL, AV_LOG_DEBUG, "Probing %s score:%d increased to %d due to MIME type\n", fmt1->name, score, AVPROBE_SCORE_MIME);

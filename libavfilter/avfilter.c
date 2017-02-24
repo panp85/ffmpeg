@@ -383,11 +383,20 @@ int ff_request_frame_to_filter(AVFilterLink *link)
 
     FF_TPRINTF_START(NULL, request_frame_to_filter); ff_tlog_link(NULL, link, 1);
     link->frame_wanted_in = 0;
+	av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in ff_request_frame_to_filter, link->srcpad->name = %s, link->src->name,link->dst->name = [%s,%s].\n",
+			link->srcpad->name, link->src->name, link->dst->name);
     if (link->srcpad->request_frame)
-        ret = link->srcpad->request_frame(link);
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_request_frame_to_filter, request_frame yes.\n");
+		ret = link->srcpad->request_frame(link);
+    }
     else if (link->src->inputs[0])
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_request_frame_to_filter, go to ff_request_frame.\n");
         ret = ff_request_frame(link->src->inputs[0]);
-    if (ret == AVERROR_EOF && link->partial_buf) {
+    }
+	if (ret == AVERROR_EOF && link->partial_buf) {
         AVFrame *pbuf = link->partial_buf;
         link->partial_buf = NULL;
         ret = ff_filter_frame_framed(link, pbuf);

@@ -352,9 +352,11 @@ static int submit_packet(PerThreadContext *p, AVPacket *avpkt)
     if (!p->avctx->thread_safe_callbacks && (
          p->avctx->get_format != avcodec_default_get_format ||
          p->avctx->get_buffer2 != avcodec_default_get_buffer2)) {
+         av_log(NULL, AV_LOG_ERROR, "panpan test, in submit_packet, 1 p->state = %d.\n", p->state);
         while (p->state != STATE_SETUP_FINISHED && p->state != STATE_INPUT_READY) {
             int call_done = 1;
             pthread_mutex_lock(&p->progress_mutex);
+			av_log(NULL, AV_LOG_ERROR, "panpan test, in submit_packet, 2 p->state = %d.\n", p->state);
             while (p->state == STATE_SETTING_UP)
                 pthread_cond_wait(&p->progress_cond, &p->progress_mutex);
 
@@ -641,7 +643,7 @@ int ff_frame_thread_init(AVCodecContext *avctx)
 
     pthread_mutex_init(&fctx->buffer_mutex, NULL);
     fctx->delaying = 1;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_frame_thread_init, thread_count = %d.\n", thread_count);
     for (i = 0; i < thread_count; i++) {
         AVCodecContext *copy = av_malloc(sizeof(AVCodecContext));
         PerThreadContext *p  = &fctx->threads[i];

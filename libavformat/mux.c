@@ -422,7 +422,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
          av_dict_free(options);
          *options = tmp;
     }
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in init_muxer, s->oformat->name = %s.\n", s->oformat->name);
     if (s->oformat->init && (ret = s->oformat->init(s)) < 0) {
         if (s->oformat->deinit)
             s->oformat->deinit(s);
@@ -729,6 +729,7 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
         ret = s->oformat->write_uncoded_frame(s, pkt->stream_index, &frame, 0);
         av_frame_free(&frame);
     } else {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in write_packet, s->oformat: %s.\n", s->oformat->name);
         ret = s->oformat->write_packet(s, pkt);
     }
 

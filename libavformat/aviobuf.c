@@ -150,8 +150,11 @@ static void writeout(AVIOContext *s, const uint8_t *data, int len)
                                      s->current_type,
                                      s->last_time);
         else if (s->write_packet)
+        {
+            av_log(NULL, AV_LOG_ERROR, "panpan test, in writeout, go to s->write_packet.\n");
             ret = s->write_packet(s->opaque, (uint8_t *)data, len);
-        if (ret < 0) {
+        }
+		if (ret < 0) {
             s->error = ret;
         }
     }

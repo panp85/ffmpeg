@@ -756,6 +756,7 @@ int ff_read_packet(AVFormatContext *s, AVPacket *pkt)
         pkt->data = NULL;
         pkt->size = 0;
         av_init_packet(pkt);
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_read_packet, s->iformat,name: [%s,%s].\n", s->iformat->name, s->iformat->long_name);
         ret = s->iformat->read_packet(s, pkt);
         if (ret < 0) {
             /* Some demuxers return FFERROR_REDO when they consume
@@ -1645,6 +1646,7 @@ int av_read_frame(AVFormatContext *s, AVPacket *pkt)
     AVStream *st;
 
     if (!genpts) {
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in av_read_frame, genpts no.\n");
         ret = s->internal->packet_buffer
               ? read_from_packet_buffer(&s->internal->packet_buffer,
                                         &s->internal->packet_buffer_end, pkt)
@@ -1653,6 +1655,10 @@ int av_read_frame(AVFormatContext *s, AVPacket *pkt)
             return ret;
         goto return_packet;
     }
+	else
+	{
+	    av_log(NULL, AV_LOG_ERROR, "panpan test, in av_read_frame, genpts yes.\n");
+	}
 
     for (;;) {
         AVPacketList *pktl = s->internal->packet_buffer;
@@ -2877,6 +2883,7 @@ static int try_decode_frame(AVFormatContext *s, AVStream *st, AVPacket *avpkt,
         av_dict_set(options ? options : &thread_opt, "threads", "1", 0);
         if (s->codec_whitelist)
             av_dict_set(options ? options : &thread_opt, "codec_whitelist", s->codec_whitelist, 0);
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in try_decode_frame, go to avcodec_open2.\n");
         ret = avcodec_open2(avctx, codec, options ? options : &thread_opt);
         if (!options)
             av_dict_free(&thread_opt);
@@ -3373,6 +3380,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
         /* Ensure that subtitle_header is properly set. */
         if (st->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE
             && codec && !avctx->codec) {
+            av_log(NULL, AV_LOG_ERROR, "panpan test, in avformat_find_stream_info, go to avcodec_open2 a.\n");
             if (avcodec_open2(avctx, codec, options ? &options[i] : &thread_opt) < 0)
                 av_log(ic, AV_LOG_WARNING,
                        "Failed to open codec in av_find_stream_info\n");
@@ -3381,6 +3389,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
         // Try to just open decoders, in case this is enough to get parameters.
         if (!has_codec_parameters(st, NULL) && st->request_probe <= 0) {
             if (codec && !avctx->codec)
+				av_log(NULL, AV_LOG_ERROR, "panpan test, in avformat_find_stream_info, go to avcodec_open2 b.\n");
                 if (avcodec_open2(avctx, codec, options ? &options[i] : &thread_opt) < 0)
                     av_log(ic, AV_LOG_WARNING,
                            "Failed to open codec in av_find_stream_info\n");

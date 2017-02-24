@@ -271,6 +271,7 @@ static int link_filter_inouts(AVFilterContext *filt_ctx,
     pad = filt_ctx->nb_outputs;
     while (pad--) {
         AVFilterInOut *currlinkn = av_mallocz(sizeof(AVFilterInOut));
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in link_filter_inouts, go to while.\n");
         if (!currlinkn)
             return AVERROR(ENOMEM);
         currlinkn->filter_ctx  = filt_ctx;

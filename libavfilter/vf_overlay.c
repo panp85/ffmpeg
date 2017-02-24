@@ -590,7 +590,7 @@ static AVFrame *do_blend(AVFilterContext *ctx, AVFrame *mainpic,
 {
     OverlayContext *s = ctx->priv;
     AVFilterLink *inlink = ctx->inputs[0];
-
+    
     if (s->eval_mode == EVAL_MODE_FRAME) {
         int64_t pos = av_frame_get_pkt_pos(mainpic);
 
@@ -610,7 +610,7 @@ static AVFrame *do_blend(AVFilterContext *ctx, AVFrame *mainpic,
                s->var_values[VAR_X], s->x,
                s->var_values[VAR_Y], s->y);
     }
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in do_blend, go to blend_image.\n");
     blend_image(ctx, mainpic, second, s->x, s->y);
     return mainpic;
 }

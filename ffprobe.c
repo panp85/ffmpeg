@@ -2615,7 +2615,7 @@ static int open_input_file(InputFile *ifile, const char *filename)
             ist->dec_ctx->time_base = stream->codec->time_base;
             ist->dec_ctx->framerate = stream->codec->framerate;
 #endif
-
+             av_log(NULL, AV_LOG_ERROR, "panpan test, in open_input_file, go to avcodec_open2.\n");
             if (avcodec_open2(ist->dec_ctx, codec, &opts) < 0) {
                 av_log(NULL, AV_LOG_WARNING, "Could not open codec for input stream %d\n",
                        stream->index);

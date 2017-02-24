@@ -354,8 +354,11 @@ static int insert_trim(int64_t start_time, int64_t duration,
     int ret = 0;
 
     if (duration == INT64_MAX && start_time == AV_NOPTS_VALUE)
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in insert_trim, filter_name = %s, return a.\n",
+			filter_name);
         return 0;
-
+    }
     trim = avfilter_get_by_name(name);
     if (!trim) {
         av_log(NULL, AV_LOG_ERROR, "%s filter not present, cannot limit "

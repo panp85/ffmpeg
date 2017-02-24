@@ -598,7 +598,7 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
 
     avio_write_marker(pb, av_rescale(ts, AV_TIME_BASE, 1000),
                       pkt->flags & AV_PKT_FLAG_KEY && (flv->video_par ? par->codec_type == AVMEDIA_TYPE_VIDEO : 1) ? AVIO_DATA_MARKER_SYNC_POINT : AVIO_DATA_MARKER_BOUNDARY_POINT);
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in flv_write_packet, par->codec_type = %d.\n", par->codec_type);
     switch (par->codec_type) {
     case AVMEDIA_TYPE_VIDEO:
         avio_w8(pb, FLV_TAG_TYPE_VIDEO);

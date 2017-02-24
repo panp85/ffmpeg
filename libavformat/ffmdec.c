@@ -414,6 +414,7 @@ static int ffm2_read_header(AVFormatContext *s)
             codec->rc_buffer_aggressivity = av_int2double(avio_rb64(pb));
             codec->codec_tag = avio_rb32(pb);
             codec->thread_count = avio_r8(pb);
+			av_log(NULL, AV_LOG_ERROR, "panpan test, in ffm2_read_header, set thread_count to %d.\n", codec->thread_count);
             codec->coder_type = avio_rb32(pb);
             codec->me_cmp = avio_rb32(pb);
             codec->me_subpel_quality = avio_rb32(pb);
@@ -614,6 +615,7 @@ static int ffm_read_header(AVFormatContext *s)
             codec->rc_buffer_aggressivity = av_int2double(avio_rb64(pb));
             codec->codec_tag = avio_rb32(pb);
             codec->thread_count = avio_r8(pb);
+			av_log(NULL, AV_LOG_ERROR, "panpan test, in ffm_read_header, set thread_count to %d.\n", codec->thread_count);
             codec->coder_type = avio_rb32(pb);
             codec->me_cmp = avio_rb32(pb);
             codec->me_subpel_quality = avio_rb32(pb);

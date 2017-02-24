@@ -236,9 +236,12 @@ static int av_buffersrc_add_frame_internal(AVFilterContext *ctx,
     }
 
     if ((flags & AV_BUFFERSRC_FLAG_PUSH))
+    {
+        av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in av_buffersrc_add_frame_internal, go to request_frame.\n");
         if ((ret = ctx->output_pads[0].request_frame(ctx->outputs[0])) < 0)
             return ret;
-
+    }
     return 0;
 }
 

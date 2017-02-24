@@ -818,7 +818,7 @@ static int rtsp_read_packet(AVFormatContext *s, AVPacket *pkt)
     int ret;
     RTSPMessageHeader reply1, *reply = &reply1;
     char cmd[1024];
-
+    av_log(NULL, AV_LOG_ERROR, "panpant test, in rtsp_read_packet, go in.\n");
 retry:
     if (rt->server_type == RTSP_SERVER_REAL) {
         int i;
@@ -874,7 +874,10 @@ retry:
             rt->need_subscription = 0;
 
             if (rt->state == RTSP_STATE_STREAMING)
+            {
+                av_log(NULL, AV_LOG_ERROR, "panpan test, in rtsp_read_packet, go to rtsp_read_play.\n");
                 rtsp_read_play (s);
+            }
         }
     }
 

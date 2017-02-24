@@ -111,13 +111,16 @@ static int alloc_frame_buffer(AVCodecContext *avctx,  Picture *pic,
             pic->f->width  = avctx->width  + 2 * EDGE_WIDTH;
             pic->f->height = avctx->height + 2 * EDGE_WIDTH;
         }
-
+        av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in alloc_frame_buffer, go to ff_thread_get_buffer.\n");
         r = ff_thread_get_buffer(avctx, &pic->tf,
                                  pic->reference ? AV_GET_BUFFER_FLAG_REF : 0);
     } else {
         pic->f->width  = avctx->width;
         pic->f->height = avctx->height;
         pic->f->format = avctx->pix_fmt;
+		av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in alloc_frame_buffer, go to avcodec_default_get_buffer2.\n");
         r = avcodec_default_get_buffer2(avctx, pic->f, 0);
     }
 

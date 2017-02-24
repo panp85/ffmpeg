@@ -3675,7 +3675,7 @@ static int encode_picture(MpegEncContext *s, int picture_number)
     int i, ret;
     int bits;
     int context_count = s->slice_context_count;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in encode_picture, go in, picture_number = %d.\n", picture_number);
     s->picture_number = picture_number;
 
     /* Reset the average MB variance */
@@ -3722,6 +3722,7 @@ static int encode_picture(MpegEncContext *s, int picture_number)
 
     s->mb_intra=0; //for the rate distortion & bit compare functions
     for(i=1; i<context_count; i++){
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in encode_picture, context_count = %d.\n", context_count);
         ret = ff_update_duplicate_context(s->thread_context[i], s);
         if (ret < 0)
             return ret;
@@ -3891,6 +3892,7 @@ static int encode_picture(MpegEncContext *s, int picture_number)
 
     s->mb_x = s->mb_y = 0;
     s->last_bits= put_bits_count(&s->pb);
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in encode_picture, s->out_format = %d.\n", s->out_format);
     switch(s->out_format) {
     case FMT_MJPEG:
         if (CONFIG_MJPEG_ENCODER)

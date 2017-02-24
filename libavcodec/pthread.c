@@ -72,10 +72,16 @@ int ff_thread_init(AVCodecContext *avctx)
     validate_thread_parameters(avctx);
 
     if (avctx->active_thread_type&FF_THREAD_SLICE)
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_thread_init, go to ff_slice_thread_init.\n");
         return ff_slice_thread_init(avctx);
+    }
     else if (avctx->active_thread_type&FF_THREAD_FRAME)
-        return ff_frame_thread_init(avctx);
-
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_thread_init, go to ff_frame_thread_init.\n");
+	    return ff_frame_thread_init(avctx);
+    }
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_thread_init, no process.\n");
     return 0;
 }
 

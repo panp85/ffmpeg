@@ -429,7 +429,7 @@ int ffurl_write(URLContext *h, const unsigned char *buf, int size)
     /* avoid sending too big packets */
     if (h->max_packet_size && size > h->max_packet_size)
         return AVERROR(EIO);
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in ffurl_write, h->prot->name = %s, h->filename = %s.\n", h->prot->name, h->filename);
     return retry_transfer_wrapper(h, (unsigned char *)buf, size, size,
                                   (int (*)(struct URLContext *, uint8_t *, int))
                                   h->prot->url_write);

@@ -115,7 +115,7 @@ int ff_frame_thread_encoder_init(AVCodecContext *avctx, AVDictionary *options){
     int i=0;
     ThreadContext *c;
 
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_frame_thread_encoder_init, avctx->codec->name = %s.\n", avctx->codec->name);
     if(   !(avctx->thread_type & FF_THREAD_FRAME)
        || !(avctx->codec->capabilities & AV_CODEC_CAP_INTRA_ONLY))
         return 0;
@@ -161,6 +161,7 @@ int ff_frame_thread_encoder_init(AVCodecContext *avctx, AVDictionary *options){
 
     if(!avctx->thread_count) {
         avctx->thread_count = av_cpu_count();
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_frame_thread_encoder_init, av_cpu_count = %d.\n", avctx->thread_count);
         avctx->thread_count = FFMIN(avctx->thread_count, MAX_THREADS);
     }
 
@@ -186,7 +187,7 @@ int ff_frame_thread_encoder_init(AVCodecContext *avctx, AVDictionary *options){
     pthread_mutex_init(&c->buffer_mutex, NULL);
     pthread_cond_init(&c->task_fifo_cond, NULL);
     pthread_cond_init(&c->finished_task_cond, NULL);
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_frame_thread_encoder_init, avctx->thread_count = %d.\n", avctx->thread_count);
     for(i=0; i<avctx->thread_count ; i++){
         AVDictionary *tmp = NULL;
         void *tmpv;
@@ -203,6 +204,7 @@ int ff_frame_thread_encoder_init(AVCodecContext *avctx, AVDictionary *options){
 
         av_dict_copy(&tmp, options, 0);
         av_dict_set(&tmp, "threads", "1", 0);
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_frame_thread_encoder_init, go to avcodec_open2.\n");
         if(avcodec_open2(thread_avctx, avctx->codec, &tmp) < 0) {
             av_dict_free(&tmp);
             goto fail;

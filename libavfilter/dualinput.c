@@ -25,7 +25,7 @@ static int process_frame(FFFrameSync *fs)
     FFDualInputContext *s = fs->opaque;
     AVFrame *mainpic = NULL, *secondpic = NULL;
     int ret = 0;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in process_frame dualinput.c, go in.\n");
     if ((ret = ff_framesync_get_frame(&s->fs, 0, &mainpic,   1)) < 0 ||
         (ret = ff_framesync_get_frame(&s->fs, 1, &secondpic, 0)) < 0) {
         av_frame_free(&mainpic);

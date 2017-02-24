@@ -342,7 +342,7 @@ ff_rdt_parse_packet(RDTDemuxContext *s, AVPacket *pkt,
 
     if (!s->parse_packet)
         return -1;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_rdt_parse_packet, s->prev_stream_id = %d.\n", s->prev_stream_id);
     if (!buf && s->prev_stream_id != -1) {
         /* return the next packets, if any */
         timestamp= 0; ///< Should not be used if buf is NULL, but should be set to the timestamp of the packet returned....

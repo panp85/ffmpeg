@@ -1194,9 +1194,15 @@ static int graph_config_pointers(AVFilterGraph *graph,
         if (!f->nb_outputs) {
             if (f->nb_inputs > INT_MAX - sink_links_count)
                 return AVERROR(EINVAL);
+			av_log(NULL, AV_LOG_ERROR, 
+				"panpan test, in graph_config_pointers, f->name,f->nb_inputs = [%s,%d].\n", 
+				f->name, f->nb_inputs);
             sink_links_count += f->nb_inputs;
         }
     }
+	av_log(NULL, AV_LOG_ERROR, 
+		"panpan test, in graph_config_pointers, sink_links_count = %d.\n", 
+		sink_links_count);
     sinks = av_calloc(sink_links_count, sizeof(*sinks));
     if (!sinks)
         return AVERROR(ENOMEM);
@@ -1383,9 +1389,15 @@ int avfilter_graph_request_oldest(AVFilterGraph *graph)
 {
     AVFilterLink *oldest = graph->sink_links[0];
     int r;
-
+    av_log(NULL, AV_LOG_ERROR, 
+		"panpan test, in avfilter_graph_request_oldest, graph->sink_links_count = %d.\n",
+		graph->sink_links_count);
     while (graph->sink_links_count) {
         oldest = graph->sink_links[0];
+		av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in avfilter_graph_request_oldest, oldest->dst,oldest->dstpad = [%s, %s].\n",
+			oldest->dst ? oldest->dst->name : "unknown",
+			oldest->dstpad ? oldest->dstpad->name : "unknown");
         r = ff_request_frame(oldest);
         if (r != AVERROR_EOF)
             break;
@@ -1402,6 +1414,7 @@ int avfilter_graph_request_oldest(AVFilterGraph *graph)
         return AVERROR_EOF;
     av_assert1(oldest->age_index >= 0);
     while (oldest->frame_wanted_out) {
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in avfilter_graph_request_oldest, in while.\n");
         r = ff_filter_graph_run_once(graph);
         if (r < 0)
             return r;

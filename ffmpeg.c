@@ -988,6 +988,9 @@ static void do_video_out(AVFormatContext *s,
                 format_video_sync = VSYNC_VSCFR;
             }
         }
+		av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in do_video_out, video_sync_method,format_video_sync = [%d,%d].\n", 
+			video_sync_method, format_video_sync);
         ost->is_cfr = (format_video_sync == VSYNC_CFR || format_video_sync == VSYNC_VSCFR);
 
         if (delta0 < 0 &&
@@ -1090,6 +1093,7 @@ static void do_video_out(AVFormatContext *s,
 #if FF_API_LAVF_FMT_RAWPICTURE
     if (s->oformat->flags & AVFMT_RAWPICTURE &&
         enc->codec->id == AV_CODEC_ID_RAWVIDEO) {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in do_video_out, go in 1.\n");
         /* raw pictures are written as AVPicture structure to
            avoid any copies. We support temporarily the older
            method. */
@@ -1108,7 +1112,7 @@ static void do_video_out(AVFormatContext *s,
     {
         int got_packet, forced_keyframe = 0;
         double pts_time;
-
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in do_video_out, go in 2.\n");
         if (enc->flags & (AV_CODEC_FLAG_INTERLACED_DCT | AV_CODEC_FLAG_INTERLACED_ME) &&
             ost->top_field_first >= 0)
             in_picture->top_field_first = !!ost->top_field_first;
@@ -1335,6 +1339,9 @@ static int reap_filters(int flush)
             if (filtered_frame->pts != AV_NOPTS_VALUE) {
                 int64_t start_time = (of->start_time == AV_NOPTS_VALUE) ? 0 : of->start_time;
                 AVRational tb = enc->time_base;
+				av_log(NULL, AV_LOG_ERROR, 
+					"panpan test, in reap_filters, tb.den,av_log2 = [%d, %d].\n", 
+					tb.den, av_log2(tb.den));
                 int extra_bits = av_clip(29 - av_log2(tb.den), 0, 16);
 
                 tb.den <<= extra_bits;
@@ -2182,6 +2189,9 @@ static int decode_video(InputStream *ist, AVPacket *pkt, int *got_output)
     }
 
     frame_sample_aspect= av_opt_ptr(avcodec_get_frame_class(), decoded_frame, "sample_aspect_ratio");
+	av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in decode_video, ist->nb_filters = %d.\n", 
+			ist->nb_filters);
     for (i = 0; i < ist->nb_filters; i++) {
         if (!frame_sample_aspect->num)
             *frame_sample_aspect = ist->st->sample_aspect_ratio;
@@ -2193,6 +2203,9 @@ static int decode_video(InputStream *ist, AVPacket *pkt, int *got_output)
                 break;
         } else
             f = decoded_frame;
+		av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in decode_video, ist->filters[%d]->filter name = %s.\n", 
+			i, ist->filters[i]->filter->name);
         ret = av_buffersrc_add_frame_flags(ist->filters[i]->filter, f, AV_BUFFERSRC_FLAG_PUSH);
         if (ret == AVERROR_EOF) {
             ret = 0; /* ignore */
@@ -2526,7 +2539,7 @@ static enum AVPixelFormat get_format(AVCodecContext *s, const enum AVPixelFormat
 static int get_buffer(AVCodecContext *s, AVFrame *frame, int flags)
 {
     InputStream *ist = s->opaque;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in get_buffer ffmpeg.c, go in.\n");
     if (ist->hwaccel_get_buffer && frame->format == ist->hwaccel_pix_fmt)
         return ist->hwaccel_get_buffer(s, frame, flags);
 
@@ -2563,6 +2576,7 @@ static int init_input_stream(int ist_index, char *error, int error_len)
 
         if (!av_dict_get(ist->decoder_opts, "threads", NULL, 0))
             av_dict_set(&ist->decoder_opts, "threads", "auto", 0);
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in init_input_stream, go to avcodec_open2.\n");
         if ((ret = avcodec_open2(ist->dec_ctx, codec, &ist->decoder_opts)) < 0) {
             if (ret == AVERROR_EXPERIMENTAL)
                 abort_codec_experimental(codec, 0);
@@ -2626,7 +2640,7 @@ static int init_output_stream(OutputStream *ost, char *error, int error_len)
             if (!ost->enc_ctx->hw_frames_ctx)
                 return AVERROR(ENOMEM);
         }
-
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in init_output_stream, go to avcodec_open2.\n");
         if ((ret = avcodec_open2(ost->enc_ctx, codec, &ost->encoder_opts)) < 0) {
             if (ret == AVERROR_EXPERIMENTAL)
                 abort_codec_experimental(codec, 1);
@@ -2772,15 +2786,19 @@ static void report_new_stream(int input_index, AVPacket *pkt)
 static void set_encoder_id(OutputFile *of, OutputStream *ost)
 {
     AVDictionaryEntry *e;
+	AVDictionaryEntry *e_tmp;
 
     uint8_t *encoder_string;
     int encoder_string_len;
     int format_flags = 0;
     int codec_flags = 0;
+	e_tmp = av_dict_get(ost->st->metadata, "encoder",  NULL, 0);
 
-    if (av_dict_get(ost->st->metadata, "encoder",  NULL, 0))
+    if (e_tmp)
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in set_encoder_id, return 1, e_tmp, key,value = [%s, %s].\n", e_tmp->key, e_tmp->value);
         return;
-
+    }
     e = av_dict_get(of->opts, "fflags", NULL, 0);
     if (e) {
         const AVOption *o = av_opt_find(of->ctx, "fflags", NULL, 0, 0);
@@ -2808,6 +2826,7 @@ static void set_encoder_id(OutputFile *of, OutputStream *ost)
     av_strlcat(encoder_string, ost->enc->name, encoder_string_len);
     av_dict_set(&ost->st->metadata, "encoder",  encoder_string,
                 AV_DICT_DONT_STRDUP_VAL | AV_DICT_DONT_OVERWRITE);
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in set_encoder_id, encoder = %s.\n", encoder_string);
 }
 
 static int transcode_init(void)
@@ -2824,13 +2843,22 @@ static int transcode_init(void)
         for (j = 0; j < fg->nb_outputs; j++) {
             OutputFilter *ofilter = fg->outputs[j];
             if (!ofilter->ost || ofilter->ost->source_index >= 0)
+            {
+                av_log(NULL, AV_LOG_ERROR, 
+					"panpan test, in transcode_init, go to continue 1, ofilter->ost = '%s', ofilter->ost->source_index = %d.\n", 
+					ofilter->ost?"yes":"no", ofilter->ost->source_index);
                 continue;
-            if (fg->nb_inputs != 1)
+            }
+			if (fg->nb_inputs != 1)
+			{
+			    av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_init, go to continue 2.\n");
                 continue;
-            for (k = nb_input_streams-1; k >= 0 ; k--)
+			}
+			for (k = nb_input_streams-1; k >= 0 ; k--)
                 if (fg->inputs[0]->ist == input_streams[k])
                     break;
             ofilter->ost->source_index = k;
+			av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_init, ofilter->ost = %d.\n", ofilter->ost);
         }
     }
 
@@ -2847,9 +2875,12 @@ static int transcode_init(void)
         AVCodecContext *enc_ctx;
         AVCodecContext *dec_ctx = NULL;
         ost = output_streams[i];
+//		av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_init, ost = %d.\n", ost);
         oc  = output_files[ost->file_index]->ctx;
         ist = get_input_stream(ost);
-        av_log(NULL, AV_LOG_INFO, "panpan test, in transcode_init, i = %d.\n", i);
+        av_log(NULL, AV_LOG_INFO, 
+			"panpan test, in transcode_init, i = %d, ost->attachment_filename = %s, ost->stream_copy = %d.\n", 
+			i, ost->attachment_filename, ost->stream_copy);
         if (ost->attachment_filename)
             continue;
 
@@ -2857,7 +2888,7 @@ static int transcode_init(void)
 
         if (ist) {
             dec_ctx = ist->dec_ctx;
-
+            av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_init, ist yes.\n");
             ost->st->disposition          = ist->st->disposition;
             enc_ctx->chroma_sample_location = dec_ctx->chroma_sample_location;
         } else {
@@ -3058,7 +3089,7 @@ static int transcode_init(void)
             if (cuvid_transcode_init(ost))
                 exit_program(1);
 #endif
-
+            av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_init, enc_ctx->codec_type = %d.\n", enc_ctx->codec_type); 
             if ((enc_ctx->codec_type == AVMEDIA_TYPE_VIDEO ||
                  enc_ctx->codec_type == AVMEDIA_TYPE_AUDIO) &&
                  filtergraph_is_simple(ost->filter->graph)) {
@@ -3069,8 +3100,12 @@ static int transcode_init(void)
                         exit_program(1);
                     }
             }
-                    av_log(NULL, AV_LOG_INFO, "panpan test, in transcode_init, configure_filtergraph end.\n\n");
-            av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_init, enc_ctx->codec_type = %d.\n", enc_ctx->codec_type); 
+			else
+			{
+			    av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_init, else 2.\n"); 
+			}
+            av_log(NULL, AV_LOG_INFO, "panpan test, in transcode_init, configure_filtergraph end.\n\n");
+            
             if (enc_ctx->codec_type == AVMEDIA_TYPE_VIDEO) {
                 if (!ost->frame_rate.num)
                     ost->frame_rate = av_buffersink_get_frame_rate(ost->filter->filter);
@@ -3416,7 +3451,7 @@ static OutputStream *choose_output(void)
     int i;
     int64_t opts_min = INT64_MAX;
     OutputStream *ost_min = NULL;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in choose_output, nb_output_streams = %d.\n", nb_output_streams);
     for (i = 0; i < nb_output_streams; i++) {
         OutputStream *ost = output_streams[i];
         int64_t opts = ost->st->cur_dts == AV_NOPTS_VALUE ? INT64_MIN :
@@ -3424,7 +3459,7 @@ static OutputStream *choose_output(void)
                                     AV_TIME_BASE_Q);
         if (ost->st->cur_dts == AV_NOPTS_VALUE)
             av_log(NULL, AV_LOG_DEBUG, "cur_dts is invalid (this is harmless if it occurs once at the start per stream)\n");
-
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in choose_output, opts[%d] = %d.\n", i, opts);
         if (!ost->finished && opts < opts_min) {
             opts_min = opts;
             ost_min  = ost->unavailable ? NULL : ost;
@@ -3670,8 +3705,12 @@ static int get_input_packet(InputFile *f, AVPacket *pkt)
 
 #if HAVE_PTHREADS
     if (nb_input_files > 1)
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in get_input_packet, go to get_input_packet_mt.\n");
         return get_input_packet_mt(f, pkt);
+    }
 #endif
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in get_input_packet, go to av_read_frame.\n");
     return av_read_frame(f->ctx, pkt);
 }
 
@@ -3812,6 +3851,9 @@ static int process_input(int file_index)
 
         for (i = 0; i < ifile->nb_streams; i++) {
             ist = input_streams[ifile->ist_index + i];
+			av_log(NULL, AV_LOG_ERROR, 
+				"panpan test, in process_input, stream %d, ist->decoding_needed = %d.\n",
+				i, ist->decoding_needed);
             if (ist->decoding_needed) {
                 ret = process_input_packet(ist, NULL, 0);
                 if (ret>0)
@@ -4049,7 +4091,7 @@ static int transcode_from_filter(FilterGraph *graph, InputStream **best_ist)
     }
     if (ret != AVERROR(EAGAIN))
         return ret;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_from_filter, graph->nb_inputs = %d.\n", graph->nb_inputs);
     for (i = 0; i < graph->nb_inputs; i++) {
         ifilter = graph->inputs[i];
         ist = ifilter->ist;
@@ -4057,6 +4099,9 @@ static int transcode_from_filter(FilterGraph *graph, InputStream **best_ist)
             input_files[ist->file_index]->eof_reached)
             continue;
         nb_requests = av_buffersrc_get_nb_failed_requests(ifilter->filter);
+		av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in transcode_from_filter, ifilter->name = %s, ifilter->filter->name = %s, nb_requests = %d.\n", 
+			ifilter->name, ifilter->filter->name, nb_requests);
         if (nb_requests > nb_requests_max) {
             nb_requests_max = nb_requests;
             *best_ist = ist;
@@ -4091,7 +4136,7 @@ static int transcode_step(void)
         av_log(NULL, AV_LOG_VERBOSE, "No more inputs to read from, finishing.\n");
         return AVERROR_EOF;
     }
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_step, ost->filter: %s.\n", ost->filter?"yes":"no");
     if (ost->filter) {
         if ((ret = transcode_from_filter(ost->filter->graph, &ist)) < 0)
             return ret;
@@ -4099,6 +4144,7 @@ static int transcode_step(void)
             return 0;
     } else {
         av_assert0(ost->source_index >= 0);
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_step, ost->source_index = %d.\n", ost->source_index);
         ist = input_streams[ost->source_index];
     }
 

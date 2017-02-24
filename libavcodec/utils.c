@@ -519,8 +519,13 @@ static int update_frame_pool(AVCodecContext *avctx, AVFrame *frame)
 
         if (pool->format == frame->format &&
             pool->width == frame->width && pool->height == frame->height)
+        {   
+            av_log(NULL, AV_LOG_ERROR, "panpan test, in update_frame_pool, return 1.\n");
             return 0;
-
+        }else
+        {
+            av_log(NULL, AV_LOG_ERROR, "panpan test, in update_frame_pool, go on 1.\n");
+        }
         avcodec_align_dimensions2(avctx, &w, &h, pool->stride_align);
 
         do {
@@ -723,7 +728,7 @@ void ff_color_frame(AVFrame *frame, const int c[4])
 int avcodec_default_get_buffer2(AVCodecContext *avctx, AVFrame *frame, int flags)
 {
     int ret;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_default_get_buffer2. go in.\n");
     if ((ret = update_frame_pool(avctx, frame)) < 0)
         return ret;
 
@@ -911,7 +916,9 @@ static int get_buffer_internal(AVCodecContext *avctx, AVFrame *frame, int flags)
         }
     } else
         avctx->sw_pix_fmt = avctx->pix_fmt;
-
+    av_log(NULL, AV_LOG_ERROR, 
+		"panpan test, in get_buffer_internal, go to avctx->get_buffer2, codec name,id = [%s,%d].\n", 
+		avctx->codec_name, avctx->codec_id);
     ret = avctx->get_buffer2(avctx, frame, flags);
     if (ret >= 0)
         validate_avframe_allocation(avctx, frame);
@@ -1210,10 +1217,12 @@ int attribute_align_arg avcodec_open2(AVCodecContext *avctx, const AVCodec *code
     int ret = 0;
     AVDictionary *tmp = NULL;
     const AVPixFmtDescriptor *pixdesc;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_open2, codec->name = %s.\n", codec->name);
     if (avcodec_is_open(avctx))
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_open2, avcodec_is_open yes.\n");
         return 0;
-
+    }
     if ((!codec && !avctx->codec)) {
         av_log(avctx, AV_LOG_ERROR, "No codec provided to avcodec_open2()\n");
         return AVERROR(EINVAL);
@@ -1347,6 +1356,7 @@ int attribute_align_arg avcodec_open2(AVCodecContext *avctx, const AVCodec *code
 
     if ((avctx->codec->capabilities & AV_CODEC_CAP_EXPERIMENTAL) &&
         avctx->strict_std_compliance > FF_COMPLIANCE_EXPERIMENTAL) {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_open2, AV_CODEC_CAP_EXPERIMENTAL and > FF_COMPLIANCE_EXPERIMENTAL.\n");
         const char *codec_string = av_codec_is_encoder(codec) ? "encoder" : "decoder";
         AVCodec *codec2;
         av_log(avctx, AV_LOG_ERROR,
@@ -1372,6 +1382,7 @@ int attribute_align_arg avcodec_open2(AVCodecContext *avctx, const AVCodec *code
 
     if (CONFIG_FRAME_THREAD_ENCODER && av_codec_is_encoder(avctx->codec)) {
         ff_unlock_avcodec(codec); //we will instantiate a few encoders thus kick the counter to prevent false detection of a problem
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_open2, go to ff_frame_thread_encoder_init.\n");
         ret = ff_frame_thread_encoder_init(avctx, options ? *options : NULL);
         ff_lock_avcodec(avctx, codec);
         if (ret < 0)
@@ -1380,6 +1391,7 @@ int attribute_align_arg avcodec_open2(AVCodecContext *avctx, const AVCodec *code
 
     if (HAVE_THREADS
         && !(avctx->internal->frame_thread_encoder && (avctx->active_thread_type&FF_THREAD_FRAME))) {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_open2, go to ff_thread_init.\n");
         ret = ff_thread_init(avctx);
         if (ret < 0) {
             goto free_and_end;
@@ -1936,8 +1948,11 @@ int attribute_align_arg avcodec_encode_video2(AVCodecContext *avctx,
 
     if(CONFIG_FRAME_THREAD_ENCODER &&
        avctx->internal->frame_thread_encoder && (avctx->active_thread_type&FF_THREAD_FRAME))
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_encode_video2, go to ff_thread_video_encode_frame.\n");
         return ff_thread_video_encode_frame(avctx, avpkt, frame, got_packet_ptr);
-
+    }
+//	av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_encode_video2, go to 2.\n");
     if ((avctx->flags&AV_CODEC_FLAG_PASS1) && avctx->stats_out)
         avctx->stats_out[0] = '\0';
 
@@ -1957,7 +1972,7 @@ int attribute_align_arg avcodec_encode_video2(AVCodecContext *avctx,
         av_log(avctx, AV_LOG_WARNING, "AVFrame.width or height is not set\n");
 
     av_assert0(avctx->codec->encode2);
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_encode_video2, avctx->codec:%s.\n", avctx->codec->name);
     ret = avctx->codec->encode2(avctx, avpkt, frame, got_packet_ptr);
     av_assert0(ret <= 0);
 
@@ -2217,9 +2232,14 @@ int attribute_align_arg avcodec_decode_video2(AVCodecContext *avctx, AVFrame *pi
 
         avctx->internal->pkt = &tmp;
         if (HAVE_THREADS && avctx->active_thread_type & FF_THREAD_FRAME)
+        {
+            av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_decode_video2, go to ff_thread_decode_frame.\n");
             ret = ff_thread_decode_frame(avctx, picture, got_picture_ptr,
                                          &tmp);
-        else {
+        }else {
+			av_log(NULL, AV_LOG_ERROR, 
+				"panpan test, in avcodec_decode_video2, avctx->codec->decode, name: [%s,%s].\n", 
+				avctx->codec->name, avctx->codec->long_name);
             ret = avctx->codec->decode(avctx, picture, got_picture_ptr,
                                        &tmp);
             if (!(avctx->codec->caps_internal & FF_CODEC_CAP_SETS_PKT_DTS))

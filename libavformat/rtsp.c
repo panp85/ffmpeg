@@ -2066,6 +2066,7 @@ int ff_rtsp_fetch_packet(AVFormatContext *s, AVPacket *pkt)
 
     /* get next frames from the same RTP packet */
     if (rt->cur_transport_priv) {
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_rtsp_fetch_packet, rt->transport = %d.\n", rt->transport);
         if (rt->transport == RTSP_TRANSPORT_RDT) {
             ret = ff_rdt_parse_packet(rt->cur_transport_priv, pkt, NULL, 0);
         } else if (rt->transport == RTSP_TRANSPORT_RTP) {
