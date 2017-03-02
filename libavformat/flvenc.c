@@ -558,7 +558,7 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
     int size = pkt->size;
     uint8_t *data = NULL;
     int flags = -1, flags_size, ret;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in flv_write_packet, par->codec_id = %d.\n", par->codec_id);
     if (par->codec_id == AV_CODEC_ID_VP6F || par->codec_id == AV_CODEC_ID_VP6A ||
         par->codec_id == AV_CODEC_ID_VP6  || par->codec_id == AV_CODEC_ID_AAC)
         flags_size = 2;
@@ -572,6 +572,7 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
         int side_size = 0;
         uint8_t *side = av_packet_get_side_data(pkt, AV_PKT_DATA_NEW_EXTRADATA, &side_size);
         if (side && side_size > 0 && (side_size != par->extradata_size || memcmp(side, par->extradata, side_size))) {
+			av_log(NULL, AV_LOG_ERROR, "panpan test, in flv_write_packet, 2.\n");
             av_free(par->extradata);
             par->extradata = av_mallocz(side_size + AV_INPUT_BUFFER_PADDING_SIZE);
             memcpy(par->extradata, side, side_size);

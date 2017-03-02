@@ -160,6 +160,7 @@ static inline int strict_pthread_once(pthread_once_t *once_control, void (*init_
 
 static inline int ff_thread_once(char *control, void (*routine)(void))
 {
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in Thread.h ff_thread_once 2.\n");
     if (!*control) {
         routine();
         *control = 1;

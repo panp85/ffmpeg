@@ -687,8 +687,10 @@ static void write_frame(AVFormatContext *s, AVPacket *pkt, OutputStream *ost)
     }
 
     if (bsfc)
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in write_frame, go to av_packet_split_side_data.\n");
         av_packet_split_side_data(pkt);
-
+    }
     if ((ret = av_apply_bitstream_filters(avctx, pkt, bsfc)) < 0) {
         print_error("", ret);
         if (exit_on_error)
@@ -1074,10 +1076,13 @@ static void do_video_out(AVFormatContext *s,
     pkt.size = 0;
 
     if (i < nb0_frames && ost->last_frame) {
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in do_video_out, 3.\n");
         in_picture = ost->last_frame;
     } else
+    {
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in do_video_out, 4.\n");
         in_picture = next_picture;
-
+    }
     if (!in_picture)
         return;
 
@@ -1317,9 +1322,12 @@ static int reap_filters(int flush)
             return AVERROR(ENOMEM);
         }
         filtered_frame = ost->filtered_frame;
-
+        av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in reap_filters, filter type = %d.\n", 
+			filter->inputs[0]->type);
         while (1) {
             double float_pts = AV_NOPTS_VALUE; // this is identical to filtered_frame.pts but with higher precision
+            av_log(NULL, AV_LOG_ERROR, "panpan test, reap_filters, go to av_buffersink_get_frame_flags.\n");
             ret = av_buffersink_get_frame_flags(filter, filtered_frame,
                                                AV_BUFFERSINK_FLAG_NO_REQUEST);
             if (ret < 0) {
@@ -1370,7 +1378,7 @@ static int reap_filters(int flush)
                             float_pts,
                             enc->time_base.num, enc->time_base.den);
                 }
-
+                av_log(NULL, AV_LOG_ERROR, "panpan test, in reap_filters, go to do_video_out.\n");
                 do_video_out(of->ctx, ost, filtered_frame, float_pts);
                 break;
             case AVMEDIA_TYPE_AUDIO:
@@ -1380,6 +1388,7 @@ static int reap_filters(int flush)
                            "Audio filter graph output is not normalized and encoder does not support parameter changes\n");
                     break;
                 }
+				av_log(NULL, AV_LOG_ERROR, "panpan test, in reap_filters, go to do_audio_out.\n");
                 do_audio_out(of->ctx, ost, filtered_frame);
                 break;
             default:

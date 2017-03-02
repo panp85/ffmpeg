@@ -475,6 +475,7 @@ static int init_pts(AVFormatContext *s)
 
 static int write_header_internal(AVFormatContext *s)
 {
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in write_header_internal, go in.\n");
     if (!(s->oformat->flags & AVFMT_NOFILE) && s->pb)
         avio_write_marker(s->pb, AV_NOPTS_VALUE, AVIO_DATA_MARKER_HEADER);
     if (s->oformat->write_header) {
@@ -718,6 +719,7 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
     did_split = av_packet_split_side_data(pkt);
 
     if (!s->internal->header_written) {
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in write_packet, header_written no.\n");
         ret = s->internal->write_header_ret ? s->internal->write_header_ret : write_header_internal(s);
         if (ret < 0)
             goto fail;
@@ -830,7 +832,7 @@ static int do_packet_auto_bsf(AVFormatContext *s, AVPacket *pkt) {
                 st->internal->bitstream_checked = 1;
         }
     }
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in do_packet_auto_bsf, st->internal->nb_bsfcs = %d.\n", st->internal->nb_bsfcs);
     for (i = 0; i < st->internal->nb_bsfcs; i++) {
         AVBSFContext *ctx = st->internal->bsfcs[i];
         if (i > 0) {

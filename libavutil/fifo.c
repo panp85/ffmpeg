@@ -23,6 +23,7 @@
 #include "avassert.h"
 #include "common.h"
 #include "fifo.h"
+#include<execinfo.h>
 
 static AVFifoBuffer *fifo_alloc_common(void *buffer, size_t size)
 {
@@ -125,7 +126,24 @@ int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size,
     int total = size;
     uint32_t wndx= f->wndx;
     uint8_t *wptr= f->wptr;
+    int nptrs;
+    void *buffer[100];
+    char **strings;
+	int j;
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in av_fifo_generic_write, go in, size = %d.\n", size);
+    nptrs = backtrace(buffer, 100);
+//	backtrace_symbols_fd(buffer, nptrs, 1); 
+/*	strings = backtrace_symbols(buffer, nptrs);
+    if (strings == NULL) {
+        av_log(NULL, AV_LOG_ERROR, "backtrace_symbols failed.\n");
+//        exit(EXIT_FAILURE);
+    }
 
+    for (j = 0; j < nptrs; j++)
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in av_fifo_generic_write..........%s\n", strings[j]);
+
+    free(strings);
+*/	
     do {
         int len = FFMIN(f->end - wptr, size);
         if (func) {
@@ -214,6 +232,7 @@ int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size,
                          void (*func)(void *, void *, int))
 {
 // Read memory barrier needed for SMP here in theory
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in av_fifo_generic_read, buf_size = %d.\n", buf_size);
     do {
         int len = FFMIN(f->end - f->rptr, buf_size);
         if (func)

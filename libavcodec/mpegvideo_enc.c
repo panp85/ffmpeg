@@ -2920,6 +2920,7 @@ int ff_mpv_reallocate_putbitbuffer(MpegEncContext *s, size_t threshold, size_t s
         av_free(s->avctx->internal->byte_buffer);
         s->avctx->internal->byte_buffer      = new_buffer;
         s->avctx->internal->byte_buffer_size = new_buffer_size;
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_mpv_reallocate_putbitbuffer, go to rebase_put_bits.\n");
         rebase_put_bits(&s->pb, new_buffer, new_buffer_size);
         s->ptr_lastgob   = s->pb.buf + lastgob_pos;
         s->vbv_delay_ptr = s->pb.buf + vbv_pos;
@@ -3937,6 +3938,9 @@ static int encode_picture(MpegEncContext *s, int picture_number)
     for(i=1; i<context_count; i++){
         update_duplicate_context_after_me(s->thread_context[i], s);
     }
+	av_log(NULL, AV_LOG_ERROR, 
+		"panpan test, in encode_picture, s->avctx->codec_type, s->avctx->codec->name: [%d, %s], context_count = %d.\n", 
+		s->avctx->codec_type, s->avctx->codec->name, context_count);
     s->avctx->execute(s->avctx, encode_thread, &s->thread_context[0], NULL, context_count, sizeof(void*));
     for(i=1; i<context_count; i++){
         if (s->pb.buf_end == s->thread_context[i]->pb.buf)

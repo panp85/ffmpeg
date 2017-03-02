@@ -413,7 +413,7 @@ int av_packet_split_side_data(AVPacket *pkt){
         int i;
         unsigned int size;
         uint8_t *p;
-
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in av_packet_split_side_data, 1.\n");
         p = pkt->data + pkt->size - 8 - 5;
         for (i=1; ; i++){
             size = AV_RB32(p);

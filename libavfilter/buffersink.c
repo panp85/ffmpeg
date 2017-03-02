@@ -97,6 +97,7 @@ static int add_buffer_ref(AVFilterContext *ctx, AVFrame *ref)
     }
 
     /* cache frame */
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in add_buffer_ref buffersink.c, go to av_fifo_generic_write.\n");
     av_fifo_generic_write(buf->fifo, &ref, FIFO_INIT_ELEMENT_SIZE, NULL);
     return 0;
 }
@@ -131,9 +132,11 @@ int attribute_align_arg av_buffersink_get_frame_flags(AVFilterContext *ctx, AVFr
     AVFilterLink *inlink = ctx->inputs[0];
     int ret;
     AVFrame *cur_frame;
-
+    
     /* no picref available, fetch it from the filterchain */
     while (!av_fifo_size(buf->fifo)) {
+		av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in av_buffersink_get_frame_flags, go in ,in while.\n");
         if (inlink->status)
             return inlink->status;
         if (flags & AV_BUFFERSINK_FLAG_NO_REQUEST)
@@ -141,6 +144,8 @@ int attribute_align_arg av_buffersink_get_frame_flags(AVFilterContext *ctx, AVFr
         if ((ret = ff_request_frame(inlink)) < 0)
             return ret;
         while (inlink->frame_wanted_out) {
+			av_log(NULL, AV_LOG_ERROR, 
+			    "panpan test, in av_buffersink_get_frame_flags, go to ff_filter_graph_run_once.\n");
             ret = ff_filter_graph_run_once(ctx->graph);
             if (ret < 0)
                 return ret;
@@ -148,10 +153,14 @@ int attribute_align_arg av_buffersink_get_frame_flags(AVFilterContext *ctx, AVFr
     }
 
     if (flags & AV_BUFFERSINK_FLAG_PEEK) {
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in av_buffersink_get_frame_flags, go to av_fifo_peek2.\n");
         cur_frame = *((AVFrame **)av_fifo_peek2(buf->fifo, 0));
         if ((ret = av_frame_ref(frame, cur_frame)) < 0)
             return ret;
     } else {
+        av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in av_buffersink_get_frame_flags, go to av_fifo_generic_read, ctx->name,ctx->filter->name = [%s, %s].\n", 
+			ctx->name, ctx->filter->name);
         av_fifo_generic_read(buf->fifo, &cur_frame, sizeof(cur_frame), NULL);
         av_frame_move_ref(frame, cur_frame);
         av_frame_free(&cur_frame);
