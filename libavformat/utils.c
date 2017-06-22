@@ -24,6 +24,9 @@
 
 #include "config.h"
 
+#include<execinfo.h>
+
+
 #include "libavutil/avassert.h"
 #include "libavutil/avstring.h"
 #include "libavutil/dict.h"
@@ -552,9 +555,11 @@ int avformat_open_input(AVFormatContext **ps, const char *filename,
         ff_id3v2_read(s, ID3v2_DEFAULT_MAGIC, &id3v2_extra_meta, 0);
 
     if (!(s->flags&AVFMT_FLAG_PRIV_OPT) && s->iformat->read_header)
+    {
+        av_log(NULL, AV_LOG_INFO, "ffmpeg panpan test, in avformat_open_input, go to s->iformat->read_header.\n");
         if ((ret = s->iformat->read_header(s)) < 0)
             goto fail;
-
+    }
     if (id3v2_extra_meta) {
         if (!strcmp(s->iformat->name, "mp3") || !strcmp(s->iformat->name, "aac") ||
             !strcmp(s->iformat->name, "tta")) {
@@ -4170,6 +4175,15 @@ AVStream *avformat_new_stream(AVFormatContext *s, const AVCodec *c)
     AVStream *st;
     int i;
     AVStream **streams;
+	void *buffer[100];
+	char **strings;
+	int depth =  backtrace(buffer, 100);
+	strings = backtrace_symbols (buffer, depth);
+	av_log(NULL, AV_LOG_INFO,"panpan test, in avformat_new_stream, dump:\n");
+	for (i = 0; i < depth; i++)  {
+			av_log(NULL, AV_LOG_INFO,"%s.\n", strings[i]);
+	//		  exit(EXIT_FAILURE);
+		}
 
     if (s->nb_streams >= INT_MAX/sizeof(*streams))
         return NULL;

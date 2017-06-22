@@ -634,6 +634,7 @@ static AVCodec *choose_decoder(OptionsContext *o, AVFormatContext *s, AVStream *
     char *codec_name = NULL;
 
     MATCH_PER_STREAM_OPT(codec_names, str, codec_name, s, st);
+	av_log(NULL, AV_LOG_INFO, "panpan test, in choose_decoder, codec_name = %s.\n", codec_name);
     if (codec_name) {
         AVCodec *codec = find_codec_or_die(codec_name, st->codec->codec_type, 0);
         st->codec->codec_id = codec->id;
@@ -1968,7 +1969,7 @@ static void init_output_filter(OutputFilter *ofilter, OptionsContext *o,
 static int init_complex_filters(void)
 {
     int i, ret = 0;
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in init_conplex_filters, nb_filtergraphs = %d.\n", nb_filtergraphs);
     for (i = 0; i < nb_filtergraphs; i++) {
         ret = init_complex_filtergraph(filtergraphs[i]);
         if (ret < 0)
@@ -2014,7 +2015,7 @@ static int open_output_file(OptionsContext *o, const char *filename)
             o->recording_time = o->stop_time - start_time;
         }
     }
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in open_output_file, nb_output_files = %d.\n", nb_output_files);
     GROW_ARRAY(output_files, nb_output_files);
     of = av_mallocz(sizeof(*of));
     if (!of)
@@ -2107,7 +2108,7 @@ static int open_output_file(OptionsContext *o, const char *filename)
     } else if (!o->nb_stream_maps) {
         char *subtitle_codec_name = NULL;
         /* pick the "best" stream of each type */
-
+        av_log(NULL, AV_LOG_INFO, "panpan test, in open_output_file, xxx, o->nb_stream_maps = 0.\n");
         /* video: highest resolution */
         if (!o->video_disable && av_guess_codec(oc->oformat, NULL, filename, NULL, AVMEDIA_TYPE_VIDEO) != AV_CODEC_ID_NONE) {
             int area = 0, idx = -1;
@@ -2204,6 +2205,7 @@ static int open_output_file(OptionsContext *o, const char *filename)
 			    "panpan test, in open_output_file, data disable.\n");
 		}
     } else {
+        av_log(NULL, AV_LOG_INFO, "panpan test, in open_output_file, xxx, o->nb_stream_maps = %d.\n", o->nb_stream_maps);
         for (i = 0; i < o->nb_stream_maps; i++) {
             StreamMap *map = &o->stream_maps[i];
 
@@ -3141,7 +3143,7 @@ static int open_files(OptionGroupList *l, const char *inout,
             return ret;
         }
 
-        av_log(NULL, AV_LOG_DEBUG, "Opening an %s file: %s.\n", inout, g->arg);
+        av_log(NULL, AV_LOG_INFO, "panpan test, in open_files, Opening an %s file: %s.\n", inout, g->arg);
         ret = open_file(&o, g->arg);
         uninit_options(&o);
         if (ret < 0) {

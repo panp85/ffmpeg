@@ -1707,7 +1707,7 @@ redirect:
 
     if (!lower_transport_mask)
         lower_transport_mask = (1 << RTSP_LOWER_TRANSPORT_NB) - 1;
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in ff_rtsp_connect, s->oformat : %s.\n", s->oformat?"yes":"no");
     if (s->oformat) {
         /* Only UDP or TCP - UDP multicast isn't supported. */
         lower_transport_mask &= (1 << RTSP_LOWER_TRANSPORT_UDP) |
@@ -1725,7 +1725,7 @@ redirect:
      * stripped out. */
     ff_url_join(rt->control_uri, sizeof(rt->control_uri), proto, NULL,
                 host, port, "%s", path);
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in ff_rtsp_connect, rt->control_uri = %s.\n", rt->control_uri);
     if (rt->control_transport == RTSP_MODE_TUNNEL) {
         /* set up initial handshake for tunneling */
         char httpname[1024];
@@ -1814,6 +1814,7 @@ redirect:
         ff_url_join(tcpname, sizeof(tcpname), lower_rtsp_proto, NULL,
                     host, port,
                     "?timeout=%d", rt->stimeout);
+		av_log(NULL, AV_LOG_INFO, "panpan test, in ff_rtsp_connect, tcpname = %s.\n", tcpname);
         if ((ret = ffurl_open_whitelist(&rt->rtsp_hd, tcpname, AVIO_FLAG_READ_WRITE,
                        &s->interrupt_callback, NULL, s->protocol_whitelist, s->protocol_blacklist, NULL)) < 0) {
             err = ret;

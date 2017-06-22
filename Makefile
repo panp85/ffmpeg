@@ -113,7 +113,7 @@ include $(SRC_PATH)/doc/Makefile
 define DOPROG
 OBJS-$(1) += $(1).o $(EXEOBJS) $(OBJS-$(1)-yes)
 $(1)$(PROGSSUF)_g$(EXESUF): $$(OBJS-$(1))
-$$(OBJS-$(1)): CFLAGS  += $(CFLAGS-$(1))
+$$(OBJS-$(1)): CFLAGS  += $(CFLAGS-$(1)) -rdynamic -g
 $(1)$(PROGSSUF)_g$(EXESUF): LDFLAGS += $(LDFLAGS-$(1))
 $(1)$(PROGSSUF)_g$(EXESUF): FF_EXTRALIBS += $(LIBS-$(1))
 -include $$(OBJS-$(1):.o=.d)

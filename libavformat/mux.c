@@ -157,6 +157,7 @@ int avformat_alloc_output_context2(AVFormatContext **avctx, AVOutputFormat *ofor
 
     if (!oformat) {
         if (format) {
+			av_log(NULL, AV_LOG_INFO, "panpan test, in avformat_alloc_output_context2, format = %s.\n", format);
             oformat = av_guess_format(format, NULL, NULL);
             if (!oformat) {
                 av_log(s, AV_LOG_ERROR, "Requested output format '%s' is not a suitable output format\n", format);
@@ -165,6 +166,7 @@ int avformat_alloc_output_context2(AVFormatContext **avctx, AVOutputFormat *ofor
             }
         } else {
             oformat = av_guess_format(NULL, filename, NULL);
+			av_log(NULL, AV_LOG_INFO, "panpan test, in avformat_alloc_output_context2, oformat->name = %s.\n", oformat->name);
             if (!oformat) {
                 ret = AVERROR(EINVAL);
                 av_log(s, AV_LOG_ERROR, "Unable to find a suitable output format for '%s'\n",

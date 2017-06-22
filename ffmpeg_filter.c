@@ -247,6 +247,7 @@ static void init_input_filter(FilterGraph *fg, AVFilterInOut *in)
         AVFormatContext *s;
         AVStream       *st = NULL;
         char *p;
+		av_log(NULL, AV_LOG_INFO, "panpan test, in init_input_filter, in->name = %d.\n", in->name);
         int file_idx = strtol(in->name, &p, 0);
 
         if (file_idx < 0 || file_idx >= nb_input_files) {
@@ -274,6 +275,7 @@ static void init_input_filter(FilterGraph *fg, AVFilterInOut *in)
         }
         ist = input_streams[input_files[file_idx]->ist_index + st->index];
     } else {
+        av_log(NULL, AV_LOG_INFO, "panpan test, in init_input_filter, in->name = null.\n");
         /* find the first unused stream of corresponding type */
         for (i = 0; i < nb_input_streams; i++) {
             ist = input_streams[i];
@@ -314,7 +316,7 @@ int init_complex_filtergraph(FilterGraph *fg)
     graph = avfilter_graph_alloc();
     if (!graph)
         return AVERROR(ENOMEM);
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in init_complex_filtergraph, fg->graph_desc = %s.\n", fg->graph_desc);
     ret = avfilter_graph_parse2(graph, fg->graph_desc, &inputs, &outputs);
     if (ret < 0)
         goto fail;
