@@ -276,6 +276,7 @@ static void sub2video_heartbeat(InputStream *ist, int64_t pts)
         /* do not send the heartbeat frame if the subtitle is already ahead */
         if (pts2 <= ist2->sub2video.last_pts)
             continue;
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in sub2video_heartbeat, 3.\n");
         if (pts2 >= ist2->sub2video.end_pts || !ist2->sub2video.frame->data[0])
             sub2video_update(ist2, NULL);
         for (j = 0, nb_reqs = 0; j < ist2->nb_filters; j++)
@@ -2213,8 +2214,8 @@ static int decode_video(InputStream *ist, AVPacket *pkt, int *got_output)
         } else
             f = decoded_frame;
 		av_log(NULL, AV_LOG_ERROR, 
-			"panpan test, in decode_video, ist->filters[%d]->filter name = %s.\n", 
-			i, ist->filters[i]->filter->name);
+			"panpan test, in decode_video, ist->filters[%d]->filter name = [%s,%s].\n", 
+			i, ist->filters[i]->filter->name, ist->filters[i]->filter->filter->name);
         ret = av_buffersrc_add_frame_flags(ist->filters[i]->filter, f, AV_BUFFERSRC_FLAG_PUSH);
         if (ret == AVERROR_EOF) {
             ret = 0; /* ignore */
@@ -3719,7 +3720,7 @@ static int get_input_packet(InputFile *f, AVPacket *pkt)
         return get_input_packet_mt(f, pkt);
     }
 #endif
-	av_log(NULL, AV_LOG_ERROR, "panpan test, in get_input_packet, go to av_read_frame.\n");
+//	av_log(NULL, AV_LOG_ERROR, "panpan test, in get_input_packet, go to av_read_frame.\n");
     return av_read_frame(f->ctx, pkt);
 }
 
@@ -4145,7 +4146,7 @@ static int transcode_step(void)
         av_log(NULL, AV_LOG_VERBOSE, "No more inputs to read from, finishing.\n");
         return AVERROR_EOF;
     }
-    av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_step, ost->filter: %s.\n", ost->filter?"yes":"no");
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in transcode_step, ost->filter: [%p,%s].\n", ost->filter, ost->filter?"yes":"no");
     if (ost->filter) {
         if ((ret = transcode_from_filter(ost->filter->graph, &ist)) < 0)
             return ret;

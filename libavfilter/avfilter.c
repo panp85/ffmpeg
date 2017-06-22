@@ -1110,8 +1110,8 @@ static int ff_filter_frame_framed(AVFilterLink *link, AVFrame *frame)
         out = frame;
 
     while(cmd && cmd->time <= out->pts * av_q2d(link->time_base)){
-        av_log(link->dst, AV_LOG_DEBUG,
-               "Processing command time:%f command:%s arg:%s\n",
+        av_log(link->dst, AV_LOG_ERROR,
+               "panpan test, in ff_filter_frame_framed, Processing command time:%f command:%s arg:%s\n",
                cmd->time, cmd->command, cmd->arg);
         avfilter_process_command(link->dst, cmd->command, cmd->arg, 0, 0, cmd->flags);
         ff_command_queue_pop(link->dst);

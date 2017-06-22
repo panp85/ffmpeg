@@ -902,7 +902,7 @@ static int open_input_file(OptionsContext *o, const char *filename)
     char *subtitle_codec_name = NULL;
     char *    data_codec_name = NULL;
     int scan_all_pmts_set = 0;
-    av_log(NULL, AV_LOG_ERROR, "panpan test, in open_input_file, format: '%s'.\n", o->format);
+    av_log(NULL, AV_LOG_INFO, "panpan test, in open_input_file, format: '%s'.\n", o->format);
     if (o->format) {
         if (!(file_iformat = av_find_input_format(o->format))) {
             av_log(NULL, AV_LOG_FATAL, "Unknown input format: '%s'\n", o->format);

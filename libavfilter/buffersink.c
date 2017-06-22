@@ -107,7 +107,7 @@ static int filter_frame(AVFilterLink *link, AVFrame *frame)
     AVFilterContext *ctx = link->dst;
     BufferSinkContext *buf = link->dst->priv;
     int ret;
-
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in filter_frame, go to add_buffer_ref, ctx->filter : %s.\n", ctx->filter->name);
     if ((ret = add_buffer_ref(ctx, frame)) < 0)
         return ret;
     if (buf->warning_limit &&

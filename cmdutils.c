@@ -406,7 +406,7 @@ int parse_optgroup(void *optctx, OptionGroup *g)
 {
     int i, ret;
 
-    av_log(NULL, AV_LOG_DEBUG, "Parsing a group of options: %s %s.\n",
+    av_log(NULL, AV_LOG_INFO, "Parsing a group of options: %s %s.\n",
            g->group_def->name, g->arg);
 
     for (i = 0; i < g->nb_opts; i++) {
@@ -422,7 +422,7 @@ int parse_optgroup(void *optctx, OptionGroup *g)
             return AVERROR(EINVAL);
         }
 
-        av_log(NULL, AV_LOG_DEBUG, "Applying option %s (%s) with argument %s.\n",
+        av_log(NULL, AV_LOG_INFO, "Applying option %s (%s) with argument %s.\n",
                o->key, o->opt->help, o->val);
 
         ret = write_option(optctx, o->opt, o->key, o->val);
@@ -430,7 +430,7 @@ int parse_optgroup(void *optctx, OptionGroup *g)
             return ret;
     }
 
-    av_log(NULL, AV_LOG_DEBUG, "Successfully parsed a group of options.\n");
+    av_log(NULL, AV_LOG_INFO, "Successfully parsed a group of options.\n");
 
     return 0;
 }

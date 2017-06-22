@@ -1646,13 +1646,16 @@ int av_read_frame(AVFormatContext *s, AVPacket *pkt)
     AVStream *st;
 
     if (!genpts) {
-		av_log(NULL, AV_LOG_ERROR, "panpan test, in av_read_frame, genpts no.\n");
+		av_log(NULL, AV_LOG_ERROR, 
+			"panpan test, in av_read_frame, genpts no, s->internal->packet_buffer:%s.\n", 
+			s->internal->packet_buffer?"true":"no");
         ret = s->internal->packet_buffer
               ? read_from_packet_buffer(&s->internal->packet_buffer,
                                         &s->internal->packet_buffer_end, pkt)
               : read_frame_internal(s, pkt);
         if (ret < 0)
             return ret;
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in av_read_frame, go to return_packet.\n");
         goto return_packet;
     }
 	else
@@ -1662,7 +1665,7 @@ int av_read_frame(AVFormatContext *s, AVPacket *pkt)
 
     for (;;) {
         AVPacketList *pktl = s->internal->packet_buffer;
-
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in av_read_frame, pktl = %s.\n", pktl?"true":"no");
         if (pktl) {
             AVPacket *next_pkt = &pktl->pkt;
 
