@@ -2649,7 +2649,7 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
             ff_url_join(buf, sizeof(buf), "tcp", NULL, hostname, port, NULL);
     }
 	av_log(NULL, AV_LOG_ERROR, "panpan test, in rtmp_open, buf = %s.\n", buf);
-
+    
 reconnect:
     if ((ret = ffurl_open_whitelist(&rt->stream, buf, AVIO_FLAG_READ_WRITE,
                                     &s->interrupt_callback, &opts,
@@ -2795,8 +2795,9 @@ reconnect:
     rt->server_bw = 2500000;
     rt->duration = 0;
 
-    av_log(s, AV_LOG_ERROR, "panpan test, in rtmp_open, Proto = %s, path = %s, app = %s, fname = %s\n",
-           proto, path, rt->app, rt->playpath);
+    av_log(s, AV_LOG_ERROR, 
+		"panpan test, in rtmp_open, Proto = %s, path = %s, app = %s, fname = %s, rt->listen = %d.\n",
+           proto, path, rt->app, rt->playpath, rt->listen);
     if (!rt->listen) {
         if ((ret = gen_connect(s, rt)) < 0)
             goto fail;

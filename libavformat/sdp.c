@@ -760,7 +760,8 @@ int av_sdp_create(AVFormatContext *ac[], int n_files, char *buf, int size)
     struct sdp_session_level s = { 0 };
     int i, j, port, ttl, is_multicast, index = 0;
     char dst[32], dst_type[5];
-
+    av_log(NULL, AV_LOG_INFO, 
+		"sdp panpant test, in av_sdp_create, go in.\n");
     memset(buf, 0, size);
     s.user = "-";
     s.src_addr = "127.0.0.1";    /* FIXME: Properly set this */

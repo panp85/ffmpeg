@@ -2386,6 +2386,8 @@ loop_end:
 
             if (ost->st->codec->codec_type == AVMEDIA_TYPE_VIDEO ||
                 ost->st->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+                av_log(NULL, AV_LOG_INFO, 
+					"panpan test, in open_output_file, 2390, go to init_simple_filtergraph.\n");
                 err = init_simple_filtergraph(ist, ost);
                 if (err < 0) {
                     av_log(NULL, AV_LOG_ERROR,
@@ -2411,7 +2413,8 @@ loop_end:
                "No input streams but output needs an input stream\n");
         exit_program(1);
     }
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in open_output_file, oc->oformat:[%s,%s].\n", 
+		oc->oformat->name, oc->oformat->long_name);
     if (!(oc->oformat->flags & AVFMT_NOFILE)) {
         /* test if it already exists to avoid losing precious files */
         assert_file_overwrite(filename);
