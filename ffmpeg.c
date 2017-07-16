@@ -2847,9 +2847,14 @@ static int transcode_init(void)
     InputStream *ist;
     char error[1024] = {0};
     int want_sdp = 1;
-
+    av_log(NULL, AV_LOG_INFO, 
+		"transcode panpan test, in transcode_init, nb_filtergraphs = %d.\n",
+		nb_filtergraphs);
     for (i = 0; i < nb_filtergraphs; i++) {
         FilterGraph *fg = filtergraphs[i];
+		av_log(NULL, AV_LOG_INFO, 
+		    "transcode panpan test, in transcode_init, fg->nb_outputs = %d.\n",
+		    fg->nb_outputs);
         for (j = 0; j < fg->nb_outputs; j++) {
             OutputFilter *ofilter = fg->outputs[j];
             if (!ofilter->ost || ofilter->ost->source_index >= 0)

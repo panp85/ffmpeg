@@ -466,6 +466,9 @@ static int configure_output_video_filter(FilterGraph *fg, OutputFilter *ofilter,
     }
 
     if ((pix_fmts = choose_pix_fmts(ost))) {
+		av_log(NULL, AV_LOG_INFO, 
+			"panpan test, in configure_output_video_filter, pix_fmts = %s.\n",
+			pix_fmts);
         AVFilterContext *filter;
         snprintf(name, sizeof(name), "pixel format for output stream %d:%d",
                  ost->file_index, ost->index);
