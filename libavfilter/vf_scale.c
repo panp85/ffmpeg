@@ -372,13 +372,13 @@ static int config_props(AVFilterLink *outlink)
     else {
         struct SwsContext **swscs[3] = {&scale->sws, &scale->isws[0], &scale->isws[1]};
         int i;
-
+        av_log(NULL, AV_LOG_INFO, "panpan test, in config_props, xxxx 3.\n");
         for (i = 0; i < 3; i++) {
             struct SwsContext **s = swscs[i];
             *s = sws_alloc_context();
             if (!*s)
                 return AVERROR(ENOMEM);
-
+            
             av_opt_set_int(*s, "srcw", inlink0 ->w, 0);
             av_opt_set_int(*s, "srch", inlink0 ->h >> !!i, 0);
             av_opt_set_int(*s, "src_format", inlink0->format, 0);
@@ -417,7 +417,7 @@ static int config_props(AVFilterLink *outlink)
             av_opt_set_int(*s, "src_v_chr_pos", scale->in_v_chr_pos, 0);
             av_opt_set_int(*s, "dst_h_chr_pos", scale->out_h_chr_pos, 0);
             av_opt_set_int(*s, "dst_v_chr_pos", scale->out_v_chr_pos, 0);
-
+            av_log(NULL, AV_LOG_INFO, "panpan test, in config_props, go to sws_init_context, i  = %d.\n", i);
             if ((ret = sws_init_context(*s, NULL, NULL)) < 0)
                 return ret;
             if (!scale->interlaced)
@@ -524,7 +524,7 @@ static int filter_frame(AVFilterLink *link, AVFrame *in)
         link->dst->inputs[0]->sample_aspect_ratio.den = in->sample_aspect_ratio.den;
         link->dst->inputs[0]->sample_aspect_ratio.num = in->sample_aspect_ratio.num;
 
-
+        av_log(NULL, AV_LOG_INFO, "scale panpan test, in filter_frame, go to config_props.\n");
         if ((ret = config_props(outlink)) < 0)
             return ret;
     }
@@ -637,6 +637,7 @@ static int process_command(AVFilterContext *ctx, const char *cmd, const char *ar
         AVFilterLink *outlink = ctx->outputs[0];
 
         av_opt_set(scale, cmd, args, 0);
+		av_log(NULL, AV_LOG_INFO, "scale panpan test, in process_command, go to config_props.\n");
         if ((ret = config_props(outlink)) < 0) {
             scale->w = old_w;
             scale->h = old_h;

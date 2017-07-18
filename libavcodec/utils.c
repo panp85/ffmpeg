@@ -1488,6 +1488,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
             ret = AVERROR(EINVAL);
             goto free_and_end;
         }
+		av_log(NULL, AV_LOG_INFO, "panpan test, in avcodec_open2, avctx->codec->channel_layouts = %d.\n", avctx->codec->channel_layouts);
         if (avctx->codec->channel_layouts) {
             if (!avctx->channel_layout) {
                 av_log(avctx, AV_LOG_WARNING, "Channel layout not specified\n");

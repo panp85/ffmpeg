@@ -944,6 +944,7 @@ int sws_setColorspaceDetails(struct SwsContext *c, const int inv_table[4],
                 return -1;
 
             c->cascaded_context[0]->alphablend = c->alphablend;
+			av_log(NULL, AV_LOG_INFO, "panpan test, in sws_setColorspaceDetails, go to sws_init_context.\n");
             ret = sws_init_context(c->cascaded_context[0], NULL , NULL);
             if (ret < 0)
                 return ret;

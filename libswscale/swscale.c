@@ -761,7 +761,7 @@ int attribute_align_arg sws_scale(struct SwsContext *c,
     uint8_t *dst2[4];
     uint8_t *rgb0_tmp = NULL;
     int macro_height = isBayer(c->srcFormat) ? 2 : (1 << c->chrSrcVSubSample);
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in sws_scale, go in.\n");
     if (!srcStride || !dstStride || !dst || !srcSlice) {
         av_log(c, AV_LOG_ERROR, "One of the input parameters to sws_scale() is NULL, please check the calling code\n");
         return 0;
@@ -776,6 +776,7 @@ int attribute_align_arg sws_scale(struct SwsContext *c,
 
     if (c->gamma_flag && c->cascaded_context[0]) {
 
+		av_log(NULL, AV_LOG_INFO, "scale panpan test, in sws_scale, go to sws_scale 1.\n");
 
         ret = sws_scale(c->cascaded_context[0],
                     srcSlice, srcStride, srcSliceY, srcSliceH,
@@ -801,6 +802,7 @@ int attribute_align_arg sws_scale(struct SwsContext *c,
     }
 
     if (c->cascaded_context[0] && srcSliceY == 0 && srcSliceH == c->cascaded_context[0]->srcH) {
+		av_log(NULL, AV_LOG_INFO, "scale panpan test, in sws_scale, go to sws_scale 2.\n");
         ret = sws_scale(c->cascaded_context[0],
                         srcSlice, srcStride, srcSliceY, srcSliceH,
                         c->cascaded_tmp, c->cascaded_tmpStride);
@@ -958,6 +960,7 @@ int attribute_align_arg sws_scale(struct SwsContext *c,
         /* reset slice direction at end of frame */
         if (srcSliceY + srcSliceH == c->srcH)
             c->sliceDir = 0;
+		av_log(NULL, AV_LOG_INFO, "panpan test, in sws_scale, go to swscale 3.\n");
 
         ret = c->swscale(c, src2, srcStride2, srcSliceY, srcSliceH, dst2,
                           dstStride2);
@@ -984,6 +987,7 @@ int attribute_align_arg sws_scale(struct SwsContext *c,
         /* reset slice direction at end of frame */
         if (!srcSliceY)
             c->sliceDir = 0;
+		av_log(NULL, AV_LOG_INFO, "panpan test, in sws_scale, go to swscale 4.\n");
 
         ret = c->swscale(c, src2, srcStride2, c->srcH-srcSliceY-srcSliceH,
                           srcSliceH, dst2, dstStride2);

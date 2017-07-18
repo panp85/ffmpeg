@@ -223,11 +223,11 @@ static int graph_check_validity(AVFilterGraph *graph, AVClass *log_ctx)
 {
     AVFilterContext *filt;
     int i, j;
-
+	av_log(log_ctx, AV_LOG_INFO, "filter panpan test, in graph_check_validity, graph->nb_filters = %d.\n", graph->nb_filters);
     for (i = 0; i < graph->nb_filters; i++) {
         const AVFilterPad *pad;
         filt = graph->filters[i];
-
+        av_log(log_ctx, AV_LOG_INFO, "filter panpan test, in graph_check_validity, filt->nb_inputs = %d.\n", filt->nb_inputs);
         for (j = 0; j < filt->nb_inputs; j++) {
             if (!filt->inputs[j] || !filt->inputs[j]->src) {
                 pad = &filt->input_pads[j];
@@ -237,6 +237,7 @@ static int graph_check_validity(AVFilterGraph *graph, AVClass *log_ctx)
                 return AVERROR(EINVAL);
             }
         }
+		av_log(log_ctx, AV_LOG_INFO, "filter panpan test, in graph_check_validity, filt->nb_outputs = %d.\n", filt->nb_outputs);
 
         for (j = 0; j < filt->nb_outputs; j++) {
             if (!filt->outputs[j] || !filt->outputs[j]->dst) {
@@ -266,6 +267,7 @@ static int graph_config_links(AVFilterGraph *graph, AVClass *log_ctx)
         filt = graph->filters[i];
 
         if (!filt->nb_outputs) {
+			av_log(NULL, AV_LOG_INFO, "filter panpan test, in graph_config_links, filt->nb_outputs = 0.\n");
             if ((ret = avfilter_config_links(filt)))
                 return ret;
         }

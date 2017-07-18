@@ -266,7 +266,7 @@ int avfilter_config_links(AVFilterContext *filter)
 
             if ((ret = avfilter_config_links(link->src)) < 0)
                 return ret;
-
+            av_log(NULL, AV_LOG_INFO, "panpan test, in avfilter_config_links,1 go to config_props.\n");
             if (!(config_link = link->srcpad->config_props)) {
                 if (link->src->nb_inputs != 1) {
                     av_log(link->src, AV_LOG_ERROR, "Source filters and filters "
@@ -315,15 +315,16 @@ int avfilter_config_links(AVFilterContext *filter)
                 if (!link->time_base.num && !link->time_base.den)
                     link->time_base = (AVRational) {1, link->sample_rate};
             }
-
-            if ((config_link = link->dstpad->config_props))
+            
+            if ((config_link = link->dstpad->config_props)){
+				av_log(NULL, AV_LOG_ERROR, "panpan test, in avfilter_config_links, go to config_props[config_link].\n");
                 if ((ret = config_link(link)) < 0) {
                     av_log(link->dst, AV_LOG_ERROR,
                            "Failed to configure input pad on %s\n",
                            link->dst->name);
                     return ret;
                 }
-
+            }
             if (link->src->nb_inputs && link->src->inputs[0]->hw_frames_ctx &&
                 !link->hw_frames_ctx) {
                 AVHWFramesContext *input_ctx = (AVHWFramesContext*)link->src->inputs[0]->hw_frames_ctx->data;
@@ -1063,11 +1064,13 @@ static int ff_filter_frame_framed(AVFilterLink *link, AVFrame *frame)
     av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_filter_frame_framed, dst filter name: %s.\n", 
 		link->dst->filter->name);
     if (!(filter_frame = dst->filter_frame))
+    {
+        av_log(NULL, AV_LOG_INFO, "panpan test, in ff_filter_frame_framed, set filter_frame to default_filter_freme.\n");
         filter_frame = default_filter_frame;
-
+    }
     /* copy the frame if needed */
     if (dst->needs_writable && !av_frame_is_writable(frame)) {
-        av_log(link->dst, AV_LOG_DEBUG, "Copying data in avfilter.\n");
+        av_log(link->dst, AV_LOG_INFO, "panan test,in ff_filter_frame_framed, Copying data in avfilter.\n");
 
         switch (link->type) {
         case AVMEDIA_TYPE_VIDEO:
@@ -1228,8 +1231,10 @@ int ff_filter_frame(AVFilterLink *link, AVFrame *frame)
         (link->partial_buf ||
          frame->nb_samples < link->min_samples ||
          frame->nb_samples > link->max_samples)) {
+        av_log(NULL, AV_LOG_INFO, "filter panpan test, in ff_filter_frame, go to ff_filter_frame_needs_framing.\n");
         return ff_filter_frame_needs_framing(link, frame);
     } else {
+        av_log(NULL, AV_LOG_INFO, "filter panpan test, in ff_filter_frame, go to ff_filter_frame_framed.\n");
         return ff_filter_frame_framed(link, frame);
     }
 error:
