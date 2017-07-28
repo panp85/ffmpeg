@@ -290,7 +290,8 @@ av_cold int ff_mpv_encode_init(AVCodecContext *avctx)
     int i, ret, format_supported;
 
     mpv_encode_defaults(s);
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in ff_mpv_encode_init, avctx->codec_id = %d, avctx->pix_fmt = %d, AV_CODEC_ID_FLV1 = %d.\n", 
+		avctx->codec_id, avctx->pix_fmt, AV_CODEC_ID_FLV1);
     switch (avctx->codec_id) {
     case AV_CODEC_ID_MPEG2VIDEO:
         if (avctx->pix_fmt != AV_PIX_FMT_YUV420P &&
@@ -438,6 +439,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
     s->loop_filter = !!(s->avctx->flags & AV_CODEC_FLAG_LOOP_FILTER);
 
     if (avctx->rc_max_rate && !avctx->rc_buffer_size) {
+		av_log(NULL, AV_LOG_INFO, "panpan test, in ff_mpv_encode_init, avctx->codec_id = %d.\n", avctx->codec_id);
         switch(avctx->codec_id) {
         case AV_CODEC_ID_MPEG1VIDEO:
         case AV_CODEC_ID_MPEG2VIDEO:
@@ -765,7 +767,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
         return -1;
     }
     s->time_increment_bits = av_log2(s->avctx->time_base.den - 1) + 1;
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in ff_mpv_encode_init, avctx->codec->id = %d.\n", avctx->codec->id);
     switch (avctx->codec->id) {
     case AV_CODEC_ID_MPEG1VIDEO:
         s->out_format = FMT_MPEG1;

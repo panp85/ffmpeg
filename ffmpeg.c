@@ -700,6 +700,7 @@ static void write_frame(AVFormatContext *s, AVPacket *pkt, OutputStream *ost)
     if (pkt->size == 0 && pkt->side_data_elems == 0)
         return;
     if (!ost->st->codecpar->extradata && avctx->extradata) {
+		av_log(NULL, AV_LOG_INFO, "panpan test, in write_frame, avctx->extradata yes.\n");
         ost->st->codecpar->extradata = av_malloc(avctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
         if (!ost->st->codecpar->extradata) {
             av_log(NULL, AV_LOG_ERROR, "Could not allocate extradata buffer to copy parser data.\n");
@@ -3929,6 +3930,7 @@ static int process_input(int file_index)
 
     if(!ist->wrap_correction_done && is->start_time != AV_NOPTS_VALUE && ist->st->pts_wrap_bits < 64){
         int64_t stime, stime2;
+		av_log(NULL, AV_LOG_INFO, "panpan test, in process_input, go in 2.\n");
         // Correcting starttime based on the enabled streams
         // FIXME this ideally should be done before the first use of starttime but we do not know which are the enabled streams at that point.
         //       so we instead do it here as part of discontinuity handling
@@ -3936,6 +3938,7 @@ static int process_input(int file_index)
             && ifile->ts_offset == -is->start_time
             && (is->iformat->flags & AVFMT_TS_DISCONT)) {
             int64_t new_start_time = INT64_MAX;
+			av_log(NULL, AV_LOG_INFO, "panpan test, in process_input, go in 3.\n");
             for (i=0; i<is->nb_streams; i++) {
                 AVStream *st = is->streams[i];
                 if(st->discard == AVDISCARD_ALL || st->start_time == AV_NOPTS_VALUE)
@@ -3943,7 +3946,7 @@ static int process_input(int file_index)
                 new_start_time = FFMIN(new_start_time, av_rescale_q(st->start_time, st->time_base, AV_TIME_BASE_Q));
             }
             if (new_start_time > is->start_time) {
-                av_log(is, AV_LOG_VERBOSE, "Correcting start time by %"PRId64"\n", new_start_time - is->start_time);
+                av_log(is, AV_LOG_INFO, "Correcting start time by %"PRId64"\n", new_start_time - is->start_time);
                 ifile->ts_offset = -new_start_time;
             }
         }
@@ -3964,6 +3967,9 @@ static int process_input(int file_index)
 
     /* add the stream-global side data to the first packet */
     if (ist->nb_packets == 1) {
+		av_log(NULL, AV_LOG_INFO, 
+			"panpan test, in process_input, ist->nb_packets == 1, ist->st->nb_side_data = %d.\n",
+			ist->st->nb_side_data);
         if (ist->st->nb_side_data)
             av_packet_split_side_data(&pkt);
         for (i = 0; i < ist->st->nb_side_data; i++) {
@@ -3982,7 +3988,7 @@ static int process_input(int file_index)
             memcpy(dst_data, src_sd->data, src_sd->size);
         }
     }
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in process_input, ifile->ts_offset = %d.\n", (int)ifile->ts_offset);
     if (pkt.dts != AV_NOPTS_VALUE)
         pkt.dts += av_rescale_q(ifile->ts_offset, AV_TIME_BASE_Q, ist->st->time_base);
     if (pkt.pts != AV_NOPTS_VALUE)
@@ -4012,6 +4018,7 @@ static int process_input(int file_index)
     }
 
     duration = av_rescale_q(ifile->duration, ifile->time_base, ist->st->time_base);
+	av_log(NULL, AV_LOG_INFO, "panpan test, in process_input, duration = %d.\n", duration);
     if (pkt.pts != AV_NOPTS_VALUE) {
         pkt.pts += duration;
         ist->max_pts = FFMAX(pkt.pts, ist->max_pts);

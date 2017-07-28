@@ -145,11 +145,13 @@ static void writeout(AVIOContext *s, const uint8_t *data, int len)
     if (!s->error) {
         int ret = 0;
         if (s->write_data_type)
+        {
             ret = s->write_data_type(s->opaque, (uint8_t *)data,
                                      len,
                                      s->current_type,
                                      s->last_time);
-        else if (s->write_packet)
+        }
+		else if (s->write_packet)
         {
             av_log(NULL, AV_LOG_ERROR, "panpan test, in writeout, go to s->write_packet.\n");
             ret = s->write_packet(s->opaque, (uint8_t *)data, len);
@@ -473,7 +475,10 @@ void avio_wb24(AVIOContext *s, unsigned int val)
 void avio_write_marker(AVIOContext *s, int64_t time, enum AVIODataMarkerType type)
 {
     if (!s->write_data_type)
+    {
+        av_log(NULL, AV_LOG_INFO, "panpan test, in avio_write_marker, return 1.\n");
         return;
+    }
     // If ignoring boundary points, just treat it as unknown
     if (type == AVIO_DATA_MARKER_BOUNDARY_POINT && s->ignore_boundary_point)
         type = AVIO_DATA_MARKER_UNKNOWN;

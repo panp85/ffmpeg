@@ -479,8 +479,11 @@ static int write_header_internal(AVFormatContext *s)
 {
     av_log(NULL, AV_LOG_ERROR, "panpan test, in write_header_internal, go in.\n");
     if (!(s->oformat->flags & AVFMT_NOFILE) && s->pb)
+    {
+        av_log(NULL, AV_LOG_INFO, "panpan test, in write_header_internal, go to avio_write_marker AVIO_DATA_MARKER_HEADER.\n");
         avio_write_marker(s->pb, AV_NOPTS_VALUE, AVIO_DATA_MARKER_HEADER);
-    if (s->oformat->write_header) {
+    }
+	if (s->oformat->write_header) {
         int ret = s->oformat->write_header(s);
         if (ret >= 0 && s->pb && s->pb->error < 0)
             ret = s->pb->error;
@@ -492,7 +495,10 @@ static int write_header_internal(AVFormatContext *s)
     }
     s->internal->header_written = 1;
     if (!(s->oformat->flags & AVFMT_NOFILE) && s->pb)
+    {
+        av_log(NULL, AV_LOG_INFO, "panpan test, in write_header_internal, go to avio_write_marker AVIO_DATA_MARKER_UNKNOWN.\n");
         avio_write_marker(s->pb, AV_NOPTS_VALUE, AVIO_DATA_MARKER_UNKNOWN);
+    }
     return 0;
 }
 
@@ -502,7 +508,7 @@ int avformat_write_header(AVFormatContext *s, AVDictionary **options)
 
     if ((ret = init_muxer(s, options)) < 0)
         return ret;
-
+    av_log(NULL, AV_LOG_INFO, "panpan test, in avformat_write_header, s->oformat->name = %s.\n", s->oformat->name);
     if (!s->oformat->check_bitstream) {
         ret = write_header_internal(s);
         if (ret < 0)
@@ -517,7 +523,11 @@ int avformat_write_header(AVFormatContext *s, AVDictionary **options)
         if (s->oformat->flags & (AVFMT_TS_NEGATIVE | AVFMT_NOTIMESTAMPS)) {
             s->avoid_negative_ts = 0;
         } else
+        {
+            av_log(NULL, AV_LOG_INFO, 
+				"panpan test, in avformat_write_header, set avoid_negative_ts to AVFMT_AVOID_NEG_TS_MAKE_NON_NEGATIVE.\n");
             s->avoid_negative_ts = AVFMT_AVOID_NEG_TS_MAKE_NON_NEGATIVE;
+        }
     }
 
     return 0;
@@ -662,8 +672,10 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
     int ret, did_split;
 
     if (s->output_ts_offset) {
+		av_log(NULL, AV_LOG_INFO, "panpan test, in write_packet, go in 0.5.\n");
         AVStream *st = s->streams[pkt->stream_index];
         int64_t offset = av_rescale_q(s->output_ts_offset, AV_TIME_BASE_Q, st->time_base);
+		av_log(NULL, AV_LOG_INFO, "panpan test, in write_packet, 1 offset = %lld.\n", offset);
 
         if (pkt->dts != AV_NOPTS_VALUE)
             pkt->dts += offset;
@@ -672,23 +684,27 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
     }
 
     if (s->avoid_negative_ts > 0) {
+		av_log(NULL, AV_LOG_INFO, "panpan test, in write_packet, s->avoid_negative_ts > 0.\n");
         AVStream *st = s->streams[pkt->stream_index];
         int64_t offset = st->mux_ts_offset;
         int64_t ts = s->internal->avoid_negative_ts_use_pts ? pkt->pts : pkt->dts;
 
         if (s->internal->offset == AV_NOPTS_VALUE && ts != AV_NOPTS_VALUE &&
             (ts < 0 || s->avoid_negative_ts == AVFMT_AVOID_NEG_TS_MAKE_ZERO)) {
+            av_log(NULL, AV_LOG_INFO, "panpan test, in write_packet, go in 1.\n");
             s->internal->offset = -ts;
             s->internal->offset_timebase = st->time_base;
         }
 
         if (s->internal->offset != AV_NOPTS_VALUE && !offset) {
+			av_log(NULL, AV_LOG_INFO, "panpan test, in write_packet, go in 2.\n");
             offset = st->mux_ts_offset =
                 av_rescale_q_rnd(s->internal->offset,
                                  s->internal->offset_timebase,
                                  st->time_base,
                                  AV_ROUND_UP);
         }
+		av_log(NULL, AV_LOG_INFO, "panpan test, in write_packet, 2 offset = %lld.\n", offset);
 
         if (pkt->dts != AV_NOPTS_VALUE)
             pkt->dts += offset;
@@ -717,6 +733,8 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
             }
         }
     }
+	else 
+		av_log(NULL, AV_LOG_INFO, "panpan test, in write_packet, s->avoid_negative_ts > 0 not.\n");
 
     did_split = av_packet_split_side_data(pkt);
 
@@ -1052,6 +1070,7 @@ int ff_interleave_packet_per_dts(AVFormatContext *s, AVPacket *out,
         !flush &&
         s->internal->nb_interleaved_streams == stream_count+noninterleaved_count
     ) {
+        av_log(NULL, AV_LOG_INFO, "panpan test, in ff_interleave_packet_per_dts, go in 2.\n");
         AVPacket *top_pkt = &s->internal->packet_buffer->pkt;
         int64_t delta_dts = INT64_MIN;
         int64_t top_dts = av_rescale_q(top_pkt->dts,

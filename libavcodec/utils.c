@@ -1978,7 +1978,7 @@ int attribute_align_arg avcodec_encode_video2(AVCodecContext *avctx,
     av_assert0(ret <= 0);
 
     if (avpkt->data && avpkt->data == avctx->internal->byte_buffer) {
-		av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_encode_video2, after encode, 3.\n");
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_encode_video2, after encode, 3, xxxxuser_pkt.data = %s.\n", user_pkt.data?"yes":"no");
         needs_realloc = 0;
         if (user_pkt.data) {
             if (user_pkt.size >= avpkt->size) {

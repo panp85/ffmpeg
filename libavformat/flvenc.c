@@ -495,9 +495,14 @@ static int flv_write_header(AVFormatContext *s)
                 FLV_HEADER_FLAG_HASVIDEO * !!flv->video_par);
     avio_wb32(pb, 9);
     avio_wb32(pb, 0);
+	av_log(NULL, AV_LOG_INFO, "panpan test, in flv_write_header, s->nb_streams = %d.\n", s->nb_streams);
 
     for (i = 0; i < s->nb_streams; i++)
-        if (s->streams[i]->codecpar->codec_tag == 5) {
+/*		av_log(NULL, AV_LOG_INFO, 
+		    "panpan test, in flv_write_header, go to s->streams[%d]->codecpar->codec_tag = %d.\n", 
+		    i, (int)(s->streams[i]->codecpar->codec_tag));
+  */      if (s->streams[i]->codecpar->codec_tag == 5) {
+			av_log(NULL, AV_LOG_INFO, "panpan test, in flv_write_header, s->streams[i]->codecpar->codec_tag == 5.\n");
             avio_w8(pb, 8);     // message type
             avio_wb24(pb, 0);   // include flags
             avio_wb24(pb, 0);   // time stamp
