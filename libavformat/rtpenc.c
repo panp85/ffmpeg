@@ -519,8 +519,8 @@ static int rtp_write_packet(AVFormatContext *s1, AVPacket *pkt)
     int rtcp_bytes;
     int size= pkt->size;
 
-    av_log(s1, AV_LOG_TRACE, "%d: write len=%d\n", pkt->stream_index, size);
-
+    av_log(s1, AV_LOG_ERROR, "panpan test, in rtp_write_packet, %d: write len=%d, st->codecpar->codec_id = %d.\n", 
+		pkt->stream_index, size, st->codecpar->codec_id);
     rtcp_bytes = ((s->octet_count - s->last_octet_count) * RTCP_TX_RATIO_NUM) /
         RTCP_TX_RATIO_DEN;
     if ((s->first_packet || ((rtcp_bytes >= RTCP_SR_SIZE) &&

@@ -390,8 +390,11 @@ void ff_rtp_send_punch_packets(URLContext *rtp_handle)
     avio_flush(pb);
     len = avio_close_dyn_buf(pb, &buf);
     if ((len > 0) && buf)
+    {
+        av_log(0, AV_LOG_ERROR, "rtp panpan test, in ff_rtp_send_punch_packets,1 go to ffurl_write.\n");
         ffurl_write(rtp_handle, buf, len);
-    av_free(buf);
+    }
+	av_free(buf);
 
     /* Send a minimal RTCP RR */
     if (avio_open_dyn_buf(&pb) < 0)
@@ -405,7 +408,10 @@ void ff_rtp_send_punch_packets(URLContext *rtp_handle)
     avio_flush(pb);
     len = avio_close_dyn_buf(pb, &buf);
     if ((len > 0) && buf)
+	{
+        av_log(0, AV_LOG_ERROR, "rtp panpan test, in ff_rtp_send_punch_packets,2 go to ffurl_write.\n");
         ffurl_write(rtp_handle, buf, len);
+    }
     av_free(buf);
 }
 

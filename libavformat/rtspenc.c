@@ -184,7 +184,7 @@ static int rtsp_write_packet(AVFormatContext *s, AVPacket *pkt)
     struct pollfd p = {ffurl_get_file_handle(rt->rtsp_hd), POLLIN, 0};
     AVFormatContext *rtpctx;
     int ret;
-
+    av_log(0, AV_LOG_ERROR, "rtsp panpan test, in rtsp_write_packet, go in.\n");
     while (1) {
         n = poll(&p, 1, 0);
         if (n <= 0)

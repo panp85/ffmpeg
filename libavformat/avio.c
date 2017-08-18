@@ -202,8 +202,8 @@ int ffurl_connect(URLContext *uc, AVDictionary **options)
     if ((err = av_dict_set(options, "protocol_blacklist", uc->protocol_blacklist, 0)) < 0)
         return err;
     av_log(NULL, AV_LOG_ERROR, 
-		"panpan test, in ffurl_connect, go to url_open2 or url_open, uc->filename = %s.\n", 
-		uc->filename);
+		"panpan test, in ffurl_connect, go to url_open2 or url_open, uc->prot->name,uc->filename = %s, %s.\n", 
+		 uc->prot->name, uc->filename);
     err =
         uc->prot->url_open2 ? uc->prot->url_open2(uc,
                                                   uc->filename,

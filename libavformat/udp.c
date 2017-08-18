@@ -41,6 +41,8 @@
 #include "network.h"
 #include "os_support.h"
 #include "url.h"
+#include <execinfo.h>
+
 
 #if HAVE_UDPLITE_H
 #include "udplite.h"
@@ -1074,6 +1076,15 @@ static int udp_write(URLContext *h, const uint8_t *buf, int size)
 {
     UDPContext *s = h->priv_data;
     int ret;
+	void *buffer[100];
+	char **strings;
+	int depth =  backtrace(buffer, 100);
+	strings = backtrace_symbols (buffer, depth);
+	av_log(NULL, AV_LOG_INFO,"panpan test, in udp_write, dump:\n");
+	for (int i = 0; i < depth; i++)  {
+		av_log(NULL, AV_LOG_INFO,"%s.\n", strings[i]);
+		//				  exit(EXIT_FAILURE);
+	}
 
 #if HAVE_PTHREAD_CANCEL
     if (s->fifo) {

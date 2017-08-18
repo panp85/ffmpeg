@@ -142,6 +142,7 @@ AVIOContext *avio_alloc_context(
 
 static void writeout(AVIOContext *s, const uint8_t *data, int len)
 {
+    av_log(0, AV_LOG_ERROR, "panpan test, in writeout, go in.\n");
     if (!s->error) {
         int ret = 0;
         if (s->write_data_type)
@@ -857,6 +858,7 @@ static int io_read_packet(void *opaque, uint8_t *buf, int buf_size)
 static int io_write_packet(void *opaque, uint8_t *buf, int buf_size)
 {
     AVIOInternal *internal = opaque;
+	
     return ffurl_write(internal->h, buf, buf_size);
 }
 
@@ -903,7 +905,7 @@ int ffio_fdopen(AVIOContext **s, URLContext *h)
         goto fail;
 
     internal->h = h;
-
+    av_log(0, AV_LOG_ERROR, "panpan test, in ffio_fdopen, go to avio_alloc_context, io_write_packet.\n");
     *s = avio_alloc_context(buffer, buffer_size, h->flags & AVIO_FLAG_WRITE,
                             internal, io_read_packet, io_write_packet, io_seek);
     if (!*s)
@@ -1191,7 +1193,7 @@ static int dyn_buf_write(void *opaque, uint8_t *buf, int buf_size)
 {
     DynBuffer *d = opaque;
     unsigned new_size, new_allocated_size;
-
+    av_log(0, AV_LOG_ERROR, "panpan test, in dyn_buf_write, go in.\n");
     /* reallocate buffer if needed */
     new_size = d->pos + buf_size;
     new_allocated_size = d->allocated_size;
@@ -1294,7 +1296,7 @@ int avio_close_dyn_buf(AVIOContext *s, uint8_t **pbuffer)
         *pbuffer = NULL;
         return 0;
     }
-
+    av_log(0, AV_LOG_ERROR, "panpan test, in avio_close_dyn_buf, s->max_packet_size = %d.\n", s->max_packet_size);
     /* don't attempt to pad fixed-size packet buffers */
     if (!s->max_packet_size) {
         avio_write(s, padbuf, sizeof(padbuf));

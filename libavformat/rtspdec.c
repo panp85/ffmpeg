@@ -510,7 +510,8 @@ static int rtsp_read_play(AVFormatContext *s)
     int i;
     char cmd[1024];
 
-    av_log(s, AV_LOG_DEBUG, "hello state=%d\n", rt->state);
+    av_log(s, AV_LOG_INFO, "rtsp panpan test, in rtsp_read_play, hello state=%d, rt->lower_transport = %d.\n", 
+		rt->state, rt->lower_transport);
     rt->nb_byes = 0;
 
     if (rt->lower_transport == RTSP_LOWER_TRANSPORT_UDP) {
@@ -549,6 +550,7 @@ static int rtsp_read_play(AVFormatContext *s)
                      rt->seek_timestamp / AV_TIME_BASE,
                      rt->seek_timestamp / (AV_TIME_BASE / 1000) % 1000);
         }
+		av_log(0, AV_LOG_ERROR, "rtsp panpan test, in rtsp_read_play, go to ff_rtsp_send_cmd.\n");
         ff_rtsp_send_cmd(s, "PLAY", rt->control_uri, cmd, reply, NULL);
         if (reply->status_code != RTSP_STATUS_OK) {
             return ff_rtsp_averror(reply->status_code, -1);

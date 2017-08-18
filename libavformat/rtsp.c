@@ -1335,7 +1335,8 @@ static int rtsp_send_cmd_with_content_async(AVFormatContext *s,
     }
 
     av_log(s, AV_LOG_TRACE, "Sending:\n%s--\n", buf);
-
+    av_log(0, AV_LOG_ERROR, "panpan test, in rtsp_send_cmd_with_content_async, rt->rtsp_hd_out : %s.\n",
+		rt->rtsp_hd_out->prot->name);
     ffurl_write(rt->rtsp_hd_out, out_buf, strlen(out_buf));
     if (send_content_length > 0 && send_content) {
         if (rt->control_transport == RTSP_MODE_TUNNEL) {
@@ -1429,7 +1430,9 @@ int ff_rtsp_make_setup_request(AVFormatContext *s, const char *host, int port,
     port_off = av_get_random_seed() % ((rt->rtp_port_max - rt->rtp_port_min)/2);
     /* even random offset */
     port_off -= port_off & 0x01;
-
+    av_log(NULL, AV_LOG_ERROR, 
+		"rtsp panpan test, in ff_rtsp_make_setup_request, rtp_port_min, nb_rtsp_streams = %d, %d.\n", 
+		rt->rtp_port_min, rt->rtp_port_max);
     for (j = rt->rtp_port_min + port_off, i = 0; i < rt->nb_rtsp_streams; ++i) {
         char transport[2048];
 
@@ -1474,6 +1477,8 @@ int ff_rtsp_make_setup_request(AVFormatContext *s, const char *host, int port,
                             "?localport=%d", j);
                 /* we will use two ports per rtp stream (rtp and rtcp) */
                 j += 2;
+				av_log(0, AV_LOG_ERROR, 
+					"panpan test, in ff_rtsp_make_setup_request, go to ffurl_open_whitelist.\n");
                 err = ffurl_open_whitelist(&rtsp_st->rtp_handle, buf, AVIO_FLAG_READ_WRITE,
                                  &s->interrupt_callback, &opts, s->protocol_whitelist, s->protocol_blacklist, NULL);
 
@@ -1564,6 +1569,9 @@ int ff_rtsp_make_setup_request(AVFormatContext *s, const char *host, int port,
             rt->lower_transport = reply->transports[0].lower_transport;
             rt->transport = reply->transports[0].transport;
         }
+		av_log(0, AV_LOG_ERROR, 
+			"panpan test, in ff_rtsp_make_setup_request, reply->transports[0].lower_transport, lower_transport = %d, %d.\n", 
+			reply->transports[0].lower_transport, lower_transport);
 
         /* Fail if the server responded with another lower transport mode
          * than what we requested. */
@@ -1625,7 +1633,7 @@ int ff_rtsp_make_setup_request(AVFormatContext *s, const char *host, int port,
             break;
         }
         }
-
+        av_log(0, AV_LOG_ERROR, "panpan test, in ff_rtsp_make_setup_request, go to ff_rtsp_open_transport_ctx.\n");
         if ((err = ff_rtsp_open_transport_ctx(s, rtsp_st)))
             goto fail;
     }
@@ -1690,7 +1698,8 @@ redirect:
     /* extract hostname and port */
     av_url_split(proto, sizeof(proto), auth, sizeof(auth),
                  host, sizeof(host), &port, path, sizeof(path), s->filename);
-
+    av_log(0, AV_LOG_ERROR, "rtsp panpan test, in ff_rtsp_connect, proto,auth,host,path = %s, %s, %s, %s.\n", 
+		proto,auth,host,path);
     if (!strcmp(proto, "rtsps")) {
         lower_rtsp_proto         = "tls";
         default_port             = RTSPS_DEFAULT_PORT;
