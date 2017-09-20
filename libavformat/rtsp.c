@@ -210,7 +210,10 @@ static void init_rtp_handler(RTPDynamicProtocolHandler *handler,
     if (!handler)
         return;
     if (par)
+    {
+        av_log(0, AV_LOG_INFO, "panpan test, in init_rtp_handler, codec_id = %d.\n", handler->codec_id);
         par->codec_id          = handler->codec_id;
+    }
     rtsp_st->dynamic_handler = handler;
     if (st)
         st->need_parsing = handler->need_parsing;
@@ -828,9 +831,12 @@ int ff_rtsp_open_transport_ctx(AVFormatContext *s, RTSPStream *rtsp_st)
                                             rtsp_st->dynamic_protocol_context,
                                             rtsp_st->dynamic_handler);
     else if (CONFIG_RTPDEC)
+    {
+        av_log(0, AV_LOG_INFO, "panpan test, in ff_rtsp_open_transport_ctx, go to ff_rtp_parse_open.\n");
         rtsp_st->transport_priv = ff_rtp_parse_open(s, st,
                                          rtsp_st->sdp_payload_type,
                                          reordering_queue_size);
+    }
 
     if (!rtsp_st->transport_priv) {
          return AVERROR(ENOMEM);
@@ -1548,6 +1554,7 @@ int ff_rtsp_make_setup_request(AVFormatContext *s, const char *host, int port,
                         "RealChallenge2: %s, sd=%s\r\n",
                         rt->session_id, real_res, real_csum);
         }
+		av_log(0, AV_LOG_INFO, "panpan test, in ff_rtsp_make_setup_request, go to ffurl_open_whitelist, cmd = %s.\n", cmd);
         ff_rtsp_send_cmd(s, "SETUP", rtsp_st->control_url, cmd, reply, NULL);
         if (reply->status_code == 461 /* Unsupported protocol */ && i == 0) {
             err = 1;
@@ -2351,6 +2358,7 @@ static int sdp_read_header(AVFormatContext *s)
                 goto fail;
             }
         }
+		av_log(0, AV_LOG_INFO, "panpan test, in sdp_read_header, go to ff_rtsp_open_transport_ctx.\n");
         if ((err = ff_rtsp_open_transport_ctx(s, rtsp_st)))
             goto fail;
     }

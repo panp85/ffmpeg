@@ -3343,6 +3343,7 @@ int avformat_find_stream_info(AVFormatContext *ic, AVDictionary **options)
         }
         // only for the split stuff
         if (!st->parser && !(ic->flags & AVFMT_FLAG_NOPARSE) && st->request_probe <= 0) {
+			av_log(0, AV_LOG_INFO, "panpan test, in avformat_find_stream_info, go to av_parser_init.\n");
             st->parser = av_parser_init(st->codecpar->codec_id);
             if (st->parser) {
                 if (st->need_parsing == AVSTREAM_PARSE_HEADERS) {
@@ -3483,7 +3484,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
                 av_log(ic, AV_LOG_DEBUG, "All info found\n");
                 flush_codecs = 0;
 				av_log(NULL, AV_LOG_ERROR, 
-					"panpan test, in avformat_find_stream_info, break, i == ic->nb_streams.");
+					"panpan test, in avformat_find_stream_info, break, i == ic->nb_streams.\n");
                 break;
             }
         }
@@ -3520,6 +3521,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
         pkt = &pkt1;
 
         if (!(ic->flags & AVFMT_FLAG_NOBUFFER)) {
+//			av_log(0, AV_LOG_INFO, "panpan test, in avformat_find_stream_info, go to add_to_pktbuf.\n");
             ret = add_to_pktbuf(&ic->internal->packet_buffer, pkt,
                                 &ic->internal->packet_buffer_end, 0);
             if (ret < 0)
@@ -3528,8 +3530,10 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
         st = ic->streams[pkt->stream_index];
         if (!(st->disposition & AV_DISPOSITION_ATTACHED_PIC))
+        {
+  //          av_log(0, AV_LOG_INFO, "panpan test, in avformat_find_stream_info, AV_DISPOSITION_ATTACHED_PIC no.\n");
             read_size += pkt->size;
-
+        }
         avctx = st->internal->avctx;
         if (!st->internal->avctx_inited) {
             ret = avcodec_parameters_to_context(avctx, st->codecpar);
