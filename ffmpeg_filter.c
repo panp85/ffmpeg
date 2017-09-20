@@ -786,7 +786,9 @@ static int configure_input_video_filter(FilterGraph *fg, InputFilter *ifilter,
 
     if (ist->autorotate) {
         double theta = get_rotation(ist->st);
-
+        av_log(NULL, AV_LOG_INFO, 
+			"panpan test, in configure_input_video_filter, ist->autorotate = ok, theta = %d.\n",
+			(int)theta);
         if (fabs(theta - 90) < 1.0) {
             ret = insert_filter(&last_filter, &pad_idx, "transpose", "clock");
         } else if (fabs(theta - 180) < 1.0) {
@@ -807,6 +809,8 @@ static int configure_input_video_filter(FilterGraph *fg, InputFilter *ifilter,
 
     if (ist->framerate.num) {
         AVFilterContext *setpts;
+		av_log(NULL, AV_LOG_INFO, 
+					"panpan test, in configure_input_video_filter, ist->framerate.num yes.\n");
 
         snprintf(name, sizeof(name), "force CFR for input from stream %d:%d",
                  ist->file_index, ist->st->index);
@@ -824,6 +828,8 @@ static int configure_input_video_filter(FilterGraph *fg, InputFilter *ifilter,
 
     if (do_deinterlace) {
         AVFilterContext *yadif;
+		av_log(NULL, AV_LOG_INFO, 
+			"panpan test, in configure_input_video_filter, do_deinterlace yes.\n");
 
         snprintf(name, sizeof(name), "deinterlace input from stream %d:%d",
                  ist->file_index, ist->st->index);
