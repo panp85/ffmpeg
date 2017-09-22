@@ -122,6 +122,8 @@ ResampleContext *ff_audio_resample_init(AVAudioResampleContext *avr)
     ResampleContext *c;
     int out_rate    = avr->out_sample_rate;
     int in_rate     = avr->in_sample_rate;
+	av_log(0, AV_LOG_INFO, "resample panpan test, in ff_audio_resample_init, out_rate, in_rate, avr->cutoff: %d, %d, %f.\n",
+		out_rate, in_rate, avr->cutoff);
     double factor   = FFMIN(out_rate * avr->cutoff / in_rate, 1.0);
     int phase_count = 1 << avr->phase_shift;
     int felem_size;

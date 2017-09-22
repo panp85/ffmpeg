@@ -120,7 +120,7 @@ static int config_output(AVFilterLink *outlink)
     ResampleContext   *s = ctx->priv;
     char buf1[64], buf2[64];
     int ret;
-
+    av_log(ctx, AV_LOG_INFO, "resample panpan test, in config_output, go in.\n");
     int64_t resampling_forced;
 
     if (s->avr) {
@@ -226,7 +226,7 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *in)
     ResampleContext    *s = ctx->priv;
     AVFilterLink *outlink = ctx->outputs[0];
     int ret;
-
+    av_log(0, AV_LOG_INFO, "resample panpan test, in filter_frame, go in.\n");
     if (s->avr) {
         AVFrame *out;
         int delay, nb_samples;

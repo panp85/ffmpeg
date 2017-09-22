@@ -65,10 +65,12 @@ AVFrame *ff_default_get_audio_buffer(AVFilterLink *link, int nb_samples)
 AVFrame *ff_get_audio_buffer(AVFilterLink *link, int nb_samples)
 {
     AVFrame *ret = NULL;
-
+    av_log(0, AV_LOG_INFO, "panpan test, in ff_get_audio_buffer, link->dstpad->name = %s.\n", link->dstpad->name);
     if (link->dstpad->get_audio_buffer)
+    {
+        av_log(0, AV_LOG_INFO, "panpan test, in ff_get_audio_buffer, link->dstpad->get_audio_buffer yes.\n");
         ret = link->dstpad->get_audio_buffer(link, nb_samples);
-
+    }
     if (!ret)
         ret = ff_default_get_audio_buffer(link, nb_samples);
 

@@ -324,7 +324,7 @@ static int h264_handle_packet(AVFormatContext *ctx, PayloadContext *data,
     }
     nal  = buf[0];
     type = nal & 0x1f;
-
+//    av_log(0, AV_LOG_INFO, "panpan test, in h264_handle_packet, type = %d.\n", type);
     /* Simplify the case (these are all the NAL types used internally by
      * the H.264 codec). */
     if (type >= 1 && type <= 23)

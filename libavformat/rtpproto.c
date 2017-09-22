@@ -457,7 +457,10 @@ static int rtp_read(URLContext *h, uint8_t *buf, int size)
                     return AVERROR(EIO);
                 }
                 if (rtp_check_source_lists(s, addrs[i]))
+                {
+                    av_log(0, AV_LOG_INFO, "panpan test, in rtp_read, continue 1.\n");
                     continue;
+                }
                 return len;
             }
         } else if (n < 0) {

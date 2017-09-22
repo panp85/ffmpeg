@@ -228,8 +228,8 @@ static int av_buffersrc_add_frame_internal(AVFilterContext *ctx,
         }
     }
     av_log(NULL, AV_LOG_ERROR, 
-		"panpan test, in av_buffersrc_add_frame_internal, filter name: %s, go to av_fifo_generic_write.\n",
-		ctx->filter->name);
+		"panpan test, in av_buffersrc_add_frame_internal, filter name: %s, go to av_fifo_generic_write, s = %p.\n",
+		ctx->filter->name, s->fifo);
     if ((ret = av_fifo_generic_write(s->fifo, &copy, sizeof(copy), NULL)) < 0) {
         if (refcounted)
             av_frame_move_ref(frame, copy);
@@ -451,7 +451,7 @@ static int request_frame(AVFilterLink *link)
         c->nb_failed_requests++;
         return AVERROR(EAGAIN);
     }
-	av_log(NULL, AV_LOG_ERROR, "panpan test, in request_frame buffersrc.c, go to av_fifo_generic_read.\n");
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in request_frame buffersrc.c, go to av_fifo_generic_read, c = %p.\n", c->fifo);
     av_fifo_generic_read(c->fifo, &frame, sizeof(frame), NULL);
 
     ret = ff_filter_frame(link, frame);

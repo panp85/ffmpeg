@@ -636,6 +636,7 @@ int ffurl_get_file_handle(URLContext *h)
 
 int ffurl_get_multi_file_handle(URLContext *h, int **handles, int *numhandles)
 {
+    av_log(0, AV_LOG_INFO, "panpan test, in ffurl_get_multi_file_handle, h->prot->name = %s.\n", h->prot->name);
     if (!h->prot->url_get_multi_file_handle) {
         if (!h->prot->url_get_file_handle)
             return AVERROR(ENOSYS);

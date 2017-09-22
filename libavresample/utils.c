@@ -36,6 +36,7 @@
 int avresample_open(AVAudioResampleContext *avr)
 {
     int ret;
+	av_log(avr, AV_LOG_ERROR, "resample panpan test, in avresample_open, go in.\n");
 
     if (avresample_is_open(avr)) {
         av_log(avr, AV_LOG_ERROR, "The resampling context is already open.\n");

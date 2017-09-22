@@ -179,7 +179,9 @@ AVFilterContext *avfilter_graph_alloc_filter(AVFilterGraph *graph,
                                              const char *name)
 {
     AVFilterContext **filters, *s;
-    av_log(NULL, AV_LOG_ERROR, "in avfilter_graph_alloc_filter, thread_type = %d, graph->internal->thread_execute = %s.\n\n", graph->thread_type, graph->internal->thread_execute ? "yes" : "null");
+    av_log(NULL, AV_LOG_ERROR, 
+		"in avfilter_graph_alloc_filter, name = %s, filter->name = %s, thread_type = %d, graph->internal->thread_execute = %s.\n\n", 
+		name, filter->name, graph->thread_type, graph->internal->thread_execute ? "yes" : "null");
     if (graph->thread_type && !graph->internal->thread_execute) {
             av_log(NULL, AV_LOG_ERROR, "panpan test, in avfilter_graph_alloc_filter, graph->execute = %s.\n", graph->execute ? "yes" : "null");       
         if (graph->execute) {

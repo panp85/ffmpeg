@@ -135,7 +135,8 @@ static attribute_align_arg void *frame_worker_thread(void *arg)
     while (1) {
             while (p->state == STATE_INPUT_READY && !p->die)
                 pthread_cond_wait(&p->input_cond, &p->mutex);
-
+        av_log(0, AV_LOG_INFO, "panpan test, in frame_worker_thread, in while, codec->name: %s, %s.\n", avctx->codec->name,
+			avctx->codec->long_name);
         if (p->die) break;
 
         if (!codec->update_thread_context && THREAD_SAFE_CALLBACKS(avctx))

@@ -303,6 +303,8 @@ static ResampleContext *resample_init(ResampleContext *c, int out_rate, int in_r
                                     double precision, int cheby, int exact_rational)
 {
     double cutoff = cutoff0? cutoff0 : 0.97;
+	av_log(0, AV_LOG_INFO, "resample panpan test, in resample_init, out_rate, in_rate, cutoff: %d, %d, %f.\n",
+		out_rate, in_rate, cutoff);
     double factor= FFMIN(out_rate * cutoff / in_rate, 1.0);
     int phase_count= 1<<phase_shift;
     int phase_count_compensation = phase_count;
@@ -605,6 +607,8 @@ static int invert_initial_buffer(ResampleContext *c, AudioData *dst, const Audio
         return INT_MAX;
     }
 
+    av_log(0, AV_LOG_INFO, "resample panpan test, in invert_initial_buffer, c->filter_length = %d, src->ch_count = %d.\n", 
+		c->filter_length, src->ch_count);
     // else invert
     for (n = 1; n <= c->filter_length; n++) {
         for (ch = 0; ch < src->ch_count; ch++) {

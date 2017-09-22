@@ -748,8 +748,11 @@ int ff_read_packet(AVFormatContext *s, AVPacket *pkt)
             *pkt = pktl->pkt;
             st   = s->streams[pkt->stream_index];
             if (s->internal->raw_packet_buffer_remaining_size <= 0)
+            {
+                av_log(0, AV_LOG_INFO, "panpan test, in ff_read_packet, go to probe_codec.\n");
                 if ((err = probe_codec(s, st, NULL)) < 0)
                     return err;
+            }
             if (st->request_probe <= 0) {
                 s->internal->raw_packet_buffer                 = pktl->next;
                 s->internal->raw_packet_buffer_remaining_size += pkt->size;

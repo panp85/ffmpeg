@@ -185,6 +185,10 @@ static int filter_frame(AVFilterLink *inlink, AVFrame *insamplesref)
     const int n_in  = insamplesref->nb_samples;
     int64_t delay;
     int n_out       = n_in * aresample->ratio + 32;
+	av_log(0, AV_LOG_INFO, "panpan test, in filter_frame af_aresample.c n_in, aresample->ratio, n_out = %d, %f, %d.\n", 
+		n_in, aresample->ratio, n_out);
+	av_log(0, AV_LOG_INFO, "panpan test, in filter_frame af_aresample.c, inlink->dst: %s, %s.\n", 
+		inlink->dst->name, inlink->dst->filter->name);
     AVFilterLink *const outlink = inlink->dst->outputs[0];
     AVFrame *outsamplesref;
     int ret;

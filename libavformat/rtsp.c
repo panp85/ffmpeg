@@ -2000,8 +2000,11 @@ static int udp_read_packet(AVFormatContext *s, RTSPStream **prtsp_st,
             }
 #if CONFIG_RTSP_DEMUXER
             if (tcp_fd != -1 && p[0].revents & POLLIN) {
+				av_log(0, AV_LOG_INFO, "panpan test, in udp_read_packet, tcp_fd yes, and pollin.\n");
                 if (rt->rtsp_flags & RTSP_FLAG_LISTEN) {
+					av_log(0, AV_LOG_INFO, "panpan test, in udp_read_packet, RTSP_FLAG_LISTEN yes.\n");
                     if (rt->state == RTSP_STATE_STREAMING) {
+						av_log(0, AV_LOG_INFO, "panpan test, in udp_read_packet, RTSP_STATE_STREAMING.\n");
                         if (!ff_rtsp_parse_streaming_commands(s))
                             return AVERROR_EOF;
                         else
@@ -2011,6 +2014,7 @@ static int udp_read_packet(AVFormatContext *s, RTSPStream **prtsp_st,
                         return 0;
                 } else {
                     RTSPMessageHeader reply;
+					av_log(0, AV_LOG_INFO, "panpan test, in udp_read_packet, RTSP_FLAG_LISTEN no.\n");
                     ret = ff_rtsp_read_reply(s, &reply, NULL, 0, NULL);
                     if (ret < 0)
                         return ret;
@@ -2083,10 +2087,13 @@ int ff_rtsp_fetch_packet(AVFormatContext *s, AVPacket *pkt)
 
     /* get next frames from the same RTP packet */
     if (rt->cur_transport_priv) {
-		av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_rtsp_fetch_packet, rt->transport = %d.\n", rt->transport);
+		av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_rtsp_fetch_packet, rt->transport = %d, name = %s.\n", 
+			rt->transport, s->iformat->name);
         if (rt->transport == RTSP_TRANSPORT_RDT) {
             ret = ff_rdt_parse_packet(rt->cur_transport_priv, pkt, NULL, 0);
         } else if (rt->transport == RTSP_TRANSPORT_RTP) {
+            av_log(NULL, AV_LOG_ERROR, "panpan test, in ff_rtsp_fetch_packet, rt->cur_transport_priv = %s.\n", 
+			    ((RTPDemuxContext *)(rt->cur_transport_priv))->handler->enc_name);
             ret = ff_rtp_parse_packet(rt->cur_transport_priv, pkt, NULL, 0);
         } else if (CONFIG_RTPDEC && rt->ts) {
             ret = avpriv_mpegts_parse_packet(rt->ts, pkt, rt->recvbuf + rt->recvbuf_pos, rt->recvbuf_len - rt->recvbuf_pos);
@@ -2104,6 +2111,10 @@ int ff_rtsp_fetch_packet(AVFormatContext *s, AVPacket *pkt)
         } else
             rt->cur_transport_priv = NULL;
     }
+	else
+	{
+	    av_log(0, AV_LOG_INFO, "panpan test, in ff_rtsp_fetch_packet, cur_transport_priv no.\n");
+	}
 
 redo:
     if (rt->transport == RTSP_TRANSPORT_RTP) {
@@ -2146,6 +2157,8 @@ redo:
     case RTSP_LOWER_TRANSPORT_UDP:
     case RTSP_LOWER_TRANSPORT_UDP_MULTICAST:
         len = udp_read_packet(s, &rtsp_st, rt->recvbuf, RECVBUF_SIZE, wait_end);
+		av_log(0, AV_LOG_INFO, 
+			"panpan test, in ff_rtsp_fetch_packet, rtsp_st->transport_priv: %s.\n", rtsp_st->transport_priv?"yes":"no");
         if (len > 0 && rtsp_st->transport_priv && rt->transport == RTSP_TRANSPORT_RTP)
             ff_rtp_check_and_send_back_rr(rtsp_st->transport_priv, rtsp_st->rtp_handle, NULL, len);
         break;

@@ -440,9 +440,11 @@ static void fill_audiodata(AudioData *out, uint8_t *in_arg [SWR_CH_MAX]){
     if(!in_arg){
         memset(out->ch, 0, sizeof(out->ch));
     }else if(out->planar){
+        av_log(0, AV_LOG_INFO, "panpan test, in fill_audiodata, out->planar yes, out->ch_count = %d.\n", out->ch_count);
         for(i=0; i<out->ch_count; i++)
             out->ch[i]= in_arg[i];
     }else{
+        av_log(0, AV_LOG_INFO, "panpan test, in fill_audiodata, out->ch_count = %d, out->bps = %d.\n", out->ch_count, out->bps);
         for(i=0; i<out->ch_count; i++)
             out->ch[i]= in_arg[0] + i*out->bps;
     }
@@ -579,6 +581,7 @@ static int swr_convert_internal(struct SwrContext *s, AudioData *out, int out_co
     AudioData preout_tmp, midbuf_tmp;
 
     if(s->full_convert){
+		av_log(0, AV_LOG_INFO, "panpan test, in swr_convert_internal, s->full_convert yes.\n");
         av_assert0(!s->resample);
         swri_audio_convert(s->full_convert, out, in, in_count);
         return out_count;
@@ -589,6 +592,7 @@ static int swr_convert_internal(struct SwrContext *s, AudioData *out, int out_co
 
     if((ret=swri_realloc_audio(&s->postin, in_count))<0)
         return ret;
+	av_log(0, AV_LOG_INFO, "panpan test, in swr_convert_internal, s->resample_first %s.\n", s->resample_first?"yes":"no");
     if(s->resample_first){
         av_assert0(s->midbuf.ch_count == s->used_ch_count);
         if((ret=swri_realloc_audio(&s->midbuf, out_count))<0)
@@ -607,18 +611,26 @@ static int swr_convert_internal(struct SwrContext *s, AudioData *out, int out_co
     midbuf= &midbuf_tmp;
     preout_tmp= s->preout;
     preout= &preout_tmp;
-
+	
+	av_log(0, AV_LOG_INFO, 
+		"panpan test, in swr_convert_internal, s->int_sample_fmt %d, s-> in_sample_fmt %d, s->in.planar %d, s->channel_map %s.\n",
+		s->int_sample_fmt, s-> in_sample_fmt, s->in.planar, s->channel_map?"yes":"no");
     if(s->int_sample_fmt == s-> in_sample_fmt && s->in.planar && !s->channel_map)
         postin= in;
 
     if(s->resample_first ? !s->resample : !s->rematrix)
+    {
+        av_log(0, AV_LOG_INFO, "panpan test, in swr_convert_internal, midbuf= postin.\n");
         midbuf= postin;
-
+    }
     if(s->resample_first ? !s->rematrix : !s->resample)
-        preout= midbuf;
-
+    {
+		av_log(0, AV_LOG_INFO, "panpan test, in swr_convert_internal, preout= midbuf.\n");
+		preout= midbuf;
+    }
     if(s->int_sample_fmt == s->out_sample_fmt && s->out.planar
        && !(s->out_sample_fmt==AV_SAMPLE_FMT_S32P && (s->dither.output_sample_bits&31))){
+        av_log(0, AV_LOG_INFO, "panpan test, in swr_convert_internal, 0.\n");
         if(preout==in){
             out_count= FFMIN(out_count, in_count); //TODO check at the end if this is needed or redundant
             av_assert0(s->in.planar); //we only support planar internally so it has to be, we support copying non planar though
@@ -627,7 +639,11 @@ static int swr_convert_internal(struct SwrContext *s, AudioData *out, int out_co
         }
         else if(preout==postin) preout= midbuf= postin= out;
         else if(preout==midbuf) preout= midbuf= out;
-        else                    preout= out;
+        else                    
+		{
+		    av_log(0, AV_LOG_INFO, "panpan test, in swr_convert_internal, 3.\n");
+			preout= out;
+        }
     }
 
     if(in != postin){
@@ -643,7 +659,10 @@ static int swr_convert_internal(struct SwrContext *s, AudioData *out, int out_co
         if(postin != midbuf)
             swri_rematrix(s, midbuf, postin, in_count, midbuf==out);
         if(midbuf != preout)
+        {
+            av_log(0, AV_LOG_INFO, "panpan test, in swr_convert_internal, s->resample_first no, midbuf != preout.\n");
             out_count= resample(s, preout, out_count, midbuf, in_count);
+        }
     }
 
     if(preout != out && out_count){
@@ -717,7 +736,7 @@ int attribute_align_arg swr_convert(struct SwrContext *s, uint8_t *out_arg[SWR_C
 #if defined(ASSERT_LEVEL) && ASSERT_LEVEL >1
     max_output = swr_get_out_samples(s, in_count);
 #endif
-
+    av_log(0, AV_LOG_INFO, "panpan test, in swr_convert, s->drop_output = %d.\n", s->drop_output);
     while(s->drop_output > 0){
         int ret;
         uint8_t *tmp_arg[SWR_CH_MAX];
@@ -756,6 +775,7 @@ int attribute_align_arg swr_convert(struct SwrContext *s, uint8_t *out_arg[SWR_C
     fill_audiodata(out, out_arg);
 
     if(s->resample){
+		av_log(0, AV_LOG_INFO, "panpan test, in swr_convert, s->resample yes, go to swr_convert_internal.\n");
         int ret = swr_convert_internal(s, out, out_count, in, in_count);
         if(ret>0 && !s->drop_output)
             s->outpts += ret * (int64_t)s->in_sample_rate;
@@ -764,6 +784,7 @@ int attribute_align_arg swr_convert(struct SwrContext *s, uint8_t *out_arg[SWR_C
 
         return ret;
     }else{
+        av_log(0, AV_LOG_INFO, "panpan test, in swr_convert, s->resample no, go to swr_convert_internal.\n");
         AudioData tmp= *in;
         int ret2=0;
         int ret, size;
