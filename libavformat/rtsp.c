@@ -2157,8 +2157,9 @@ redo:
     case RTSP_LOWER_TRANSPORT_UDP:
     case RTSP_LOWER_TRANSPORT_UDP_MULTICAST:
         len = udp_read_packet(s, &rtsp_st, rt->recvbuf, RECVBUF_SIZE, wait_end);
-		av_log(0, AV_LOG_INFO, 
-			"panpan test, in ff_rtsp_fetch_packet, rtsp_st->transport_priv: %s.\n", rtsp_st->transport_priv?"yes":"no");
+		if(len > 0)
+		    av_log(0, AV_LOG_INFO, 
+			    "panpan test, in ff_rtsp_fetch_packet, rtsp_st->transport_priv: %s.\n", rtsp_st->transport_priv?"yes":"no");
         if (len > 0 && rtsp_st->transport_priv && rt->transport == RTSP_TRANSPORT_RTP)
             ff_rtp_check_and_send_back_rr(rtsp_st->transport_priv, rtsp_st->rtp_handle, NULL, len);
         break;
