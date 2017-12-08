@@ -72,7 +72,7 @@ static int probe(AVProbeData *p, int live)
 {
     const uint8_t *d = p->buf;
     unsigned offset = AV_RB32(d + 5);
-
+    av_log(NULL, AV_LOG_INFO, "flvdec ppt, in probe, offset = %d, p->buf_size = %d.\n", offset, p->buf_size);
     if (d[0] == 'F' &&
         d[1] == 'L' &&
         d[2] == 'V' &&
@@ -907,7 +907,8 @@ retry:
             return AVERROR_EOF;
         avio_skip(s->pb, 3); /* stream id, always 0 */
         flags = 0;
-
+        av_log(NULL, AV_LOG_INFO, "flvdec ppt, in flv_read_packet, flv->validate_next, flv->validate_count = %d, %d.\n", 
+			flv->validate_next, flv->validate_count);
         if (flv->validate_next < flv->validate_count) {
             int64_t validate_pos = flv->validate_index[flv->validate_next].pos;
             if (pos == validate_pos) {
@@ -1019,11 +1020,12 @@ skip:
             ret = FFERROR_REDO;
             goto leave;
         }
-
+    
     // if not streamed and no duration from metadata then seek to end to find
     // the duration from the timestamps
     if (s->pb->seekable && (!s->duration || s->duration == AV_NOPTS_VALUE) &&
         !flv->searched_for_end) {
+        av_log(NULL, AV_LOG_INFO, "flvdec ppt, in flv_read_packet, find the duration from the timestamps.\n");
         int size;
         const int64_t pos   = avio_tell(s->pb);
         // Read the last 4 bytes of the file, this should be the size of the

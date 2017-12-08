@@ -32,7 +32,10 @@ int ff_alloc_input_device_context(AVFormatContext **avctx, AVInputFormat *iforma
         return AVERROR(ENOMEM);
 
     if (!iformat)
+    {
+        av_log(NULL, AV_LOG_INFO, "ffmpeg ppt, in ff_alloc_input_device_context, go to av_find_input_format.\n");
         iformat = av_find_input_format(format);
+    }
     if (!iformat || !iformat->priv_class || !AV_IS_INPUT_DEVICE(iformat->priv_class->category)) {
         ret = AVERROR(EINVAL);
         goto error;

@@ -372,7 +372,7 @@ static void flv_write_codec_header(AVFormatContext* s, AVCodecParameters* par) {
                 uint8_t data[2];
 
                 for (samplerate_index = 0; samplerate_index < 16;
-                        samplerate_index++)
+				samplerate_index++)
                     if (flv->audio_par->sample_rate
                             == mpeg4audio_sample_rates[samplerate_index])
                         break;
@@ -516,7 +516,7 @@ static int flv_write_header(AVFormatContext *s)
     for (i = 0; i < s->nb_streams; i++) {
         flv_write_codec_header(s, s->streams[i]->codecpar);
     }
-
+    av_log(0, AV_LOG_INFO, "flv panpan test, in flv_write_header, pb->buf_ptr, buf = [%p, %p].\n", pb->buf_ptr, pb->buffer);
     return 0;
 }
 
@@ -563,7 +563,11 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
     int size = pkt->size;
     uint8_t *data = NULL;
     int flags = -1, flags_size, ret;
-    av_log(NULL, AV_LOG_ERROR, "panpan test, in flv_write_packet, par->codec_id = %d.\n", par->codec_id);
+	if(pb)
+	{
+	    av_log(NULL, AV_LOG_ERROR, "flv panpan test, in flv_write_packet, pb->buf_ptr, buffer = [%p, %p].\n", pb->buf_ptr, pb->buffer);
+	}
+    av_log(NULL, AV_LOG_ERROR, "flv panpan test, in flv_write_packet, par->codec_id = %d.\n", par->codec_id);
     if (par->codec_id == AV_CODEC_ID_VP6F || par->codec_id == AV_CODEC_ID_VP6A ||
         par->codec_id == AV_CODEC_ID_VP6  || par->codec_id == AV_CODEC_ID_AAC)
         flags_size = 2;

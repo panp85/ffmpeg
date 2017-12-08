@@ -480,6 +480,10 @@ void avio_write_marker(AVIOContext *s, int64_t time, enum AVIODataMarkerType typ
         av_log(NULL, AV_LOG_INFO, "panpan test, in avio_write_marker, return 1.\n");
         return;
     }
+	else
+	{
+	    av_log(NULL, AV_LOG_INFO, "panpan test, in avio_write_marker, write_data_type yes.\n");
+	}
     // If ignoring boundary points, just treat it as unknown
     if (type == AVIO_DATA_MARKER_BOUNDARY_POINT && s->ignore_boundary_point)
         type = AVIO_DATA_MARKER_UNKNOWN;
@@ -526,6 +530,7 @@ static void fill_buffer(AVIOContext *s)
         return;
 
     if (s->update_checksum && dst == s->buffer) {
+		av_log(NULL, AV_LOG_INFO, "aviobuf ppt, in fill_buffer, s->update_checksum && dst == s->buffer.\n");
         if (s->buf_end > s->checksum_ptr)
             s->checksum = s->update_checksum(s->checksum, s->checksum_ptr,
                                              s->buf_end - s->checksum_ptr);
@@ -535,6 +540,7 @@ static void fill_buffer(AVIOContext *s)
     /* make buffer smaller in case it ended up large after probing */
     if (s->read_packet && s->orig_buffer_size && s->buffer_size > s->orig_buffer_size) {
         if (dst == s->buffer) {
+			av_log(NULL, AV_LOG_INFO, "aviobuf ppt, in fill_buffer, 2.\n");
             int ret = ffio_set_buf_size(s, s->orig_buffer_size);
             if (ret < 0)
                 av_log(s, AV_LOG_WARNING, "Failed to decrease buffer size\n");
@@ -619,6 +625,7 @@ int avio_read(AVIOContext *s, unsigned char *buf, int size)
         len = FFMIN(s->buf_end - s->buf_ptr, size);
         if (len == 0 || s->write_flag) {
             if((s->direct || size > s->buffer_size) && !s->update_checksum) {
+				av_log(NULL, AV_LOG_INFO, "aviobuf ppt, in avio_read, go to read_packet.\n");
                 // bypass the buffer and read data directly into buf
                 if(s->read_packet)
                     len = s->read_packet(s->opaque, buf, size);
@@ -640,6 +647,7 @@ int avio_read(AVIOContext *s, unsigned char *buf, int size)
                     s->buf_end = s->buffer/* + len*/;
                 }
             } else {
+                av_log(NULL, AV_LOG_INFO, "aviobuf ppt, in avio_read, go to fill_buffer.\n");
                 fill_buffer(s);
                 len = s->buf_end - s->buf_ptr;
                 if (len == 0)
@@ -852,13 +860,14 @@ uint64_t ffio_read_varlen(AVIOContext *bc){
 static int io_read_packet(void *opaque, uint8_t *buf, int buf_size)
 {
     AVIOInternal *internal = opaque;
+	av_log(NULL, AV_LOG_INFO, "aviobuf ppt, in io_read_packet, go to ffurl_read.\n");
     return ffurl_read(internal->h, buf, buf_size);
 }
 
 static int io_write_packet(void *opaque, uint8_t *buf, int buf_size)
 {
     AVIOInternal *internal = opaque;
-	
+	av_log(0, AV_LOG_INFO, "avio panpan test, in io_write_packet, go to ffurl_write.\n");
     return ffurl_write(internal->h, buf, buf_size);
 }
 

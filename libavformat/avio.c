@@ -30,6 +30,7 @@
 #include "network.h"
 #endif
 #include "url.h"
+#include<execinfo.h>
 
 /** @name Logging context. */
 /*@{*/
@@ -349,6 +350,7 @@ int ffurl_open_whitelist(URLContext **puc, const char *filename, int flags,
         goto fail;
     av_log(NULL, AV_LOG_ERROR, "panpan test, in ffurl_open_white, go to ffurl_connect.\n");
     ret = ffurl_connect(*puc, options);
+	av_log(NULL, AV_LOG_ERROR, "panpan test, in ffurl_open_white, return ffurl_connect.\n");
 
     if (!ret)
         return 0;
@@ -377,6 +379,9 @@ static inline int retry_transfer_wrapper(URLContext *h, uint8_t *buf,
 
     len = 0;
     while (len < size_min) {
+	//	av_log(0, AV_LOG_ERROR, "avio ppt, h->interrupt_callback : ");
+	//	backtrace_symbols_fd((void *)&h->interrupt_callback, 1, 1); 
+	//	backtrace_symbols_fd((void *)h->interrupt_callback.callback, 1, 1); 
         if (ff_check_interrupt(&h->interrupt_callback))
             return AVERROR_EXIT;
         ret = transfer_func(h, buf + len, size - len);
@@ -412,6 +417,7 @@ int ffurl_read(URLContext *h, unsigned char *buf, int size)
 {
     if (!(h->flags & AVIO_FLAG_READ))
         return AVERROR(EIO);
+	//av_log(NULL, AV_LOG_INFO, "avio ppt, in ffurl_read, h->prot->name = %s.\n", h->prot->name);
     return retry_transfer_wrapper(h, buf, size, 1, h->prot->url_read);
 }
 

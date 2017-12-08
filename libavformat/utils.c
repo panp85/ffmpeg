@@ -387,7 +387,8 @@ static int init_input(AVFormatContext *s, const char *filename,
         return ret;
     if (s->iformat)
         return 0;
-    av_log(NULL, AV_LOG_ERROR, "panpan test, in init_input 4, go to av_probe_input_buffer2.\n");
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in init_input 4, go to av_probe_input_buffer2£¬ s->format_probesize = %d.\n", 
+		s->format_probesize);
     return av_probe_input_buffer2(s->pb, &s->iformat, filename,
                                  s, 0, s->format_probesize);
 }

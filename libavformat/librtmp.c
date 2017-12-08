@@ -264,6 +264,7 @@ static int rtmp_write(URLContext *s, const uint8_t *buf, int size)
 
 static int rtmp_read(URLContext *s, uint8_t *buf, int size)
 {
+    av_log(NULL, AV_LOG_INFO, "rtmp ppt, in librtmp.c rtmp_read, go in.\n");
     LibRTMPContext *ctx = s->priv_data;
     RTMP *r = &ctx->rtmp;
 

@@ -239,7 +239,7 @@ static int rtmp_send_packet(RTMPContext *rt, RTMPPacket *pkt, int track)
 
         if ((ret = ff_amf_read_number(&gbc, &pkt_id)) < 0)
             goto fail;
-
+        av_log(NULL, AV_LOG_INFO, "rtmp ppt, in rtmp_send_packet, name, pkt_id = %s, %lf.\n", name, pkt_id);
         if ((ret = add_tracked_method(rt, name, pkt_id)) < 0)
             goto fail;
     }
@@ -330,6 +330,8 @@ static int gen_connect(URLContext *s, RTMPContext *rt)
     ff_amf_write_number(&p, ++rt->nb_invokes);
     ff_amf_write_object_start(&p);
     ff_amf_write_field_name(&p, "app");
+	av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in gen_connect, rt->app, rt->auth_params = %s, %s.\n", 
+		rt->app, rt->auth_params);
     ff_amf_write_string2(&p, rt->app, rt->auth_params);
 
     if (!rt->is_input) {
@@ -338,12 +340,13 @@ static int gen_connect(URLContext *s, RTMPContext *rt)
     }
     ff_amf_write_field_name(&p, "flashVer");
     ff_amf_write_string(&p, rt->flashver);
-
+	av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in gen_connect, rt->tcurl, rt->swfurl = %s, %s, rt->is_input = %d, rt->conn = %s.\n", 
+				rt->tcurl, rt->swfurl, rt->is_input, rt->conn);
     if (rt->swfurl) {
         ff_amf_write_field_name(&p, "swfUrl");
         ff_amf_write_string(&p, rt->swfurl);
     }
-
+	
     ff_amf_write_field_name(&p, "tcUrl");
     ff_amf_write_string2(&p, rt->tcurl, rt->auth_params);
     if (rt->is_input) {
@@ -410,6 +413,7 @@ static int read_connect(URLContext *s, RTMPContext *rt)
     double seqnum;
     uint8_t tmpstr[256];
     GetByteContext gbc;
+	av_log(NULL, AV_LOG_ERROR, "rtmpprote ppt, in read_connect, go in.\n");
 
     if ((ret = ff_rtmp_packet_read(rt->stream, &pkt, rt->in_chunk_size,
                                    &rt->prev_pkt[0], &rt->nb_prev_pkt[0])) < 0)
@@ -446,6 +450,7 @@ static int read_connect(URLContext *s, RTMPContext *rt)
                                  "app", tmpstr, sizeof(tmpstr));
     if (ret)
         av_log(s, AV_LOG_WARNING, "App field not found in connect\n");
+	av_log(NULL, AV_LOG_ERROR, "rtmpprote ppt, in read_connect, tmpstr,rt->app = %s,%s.\n", tmpstr,rt->app);
     if (!ret && strcmp(tmpstr, rt->app))
         av_log(s, AV_LOG_WARNING, "App field don't match up: %s <-> %s\n",
                tmpstr, rt->app);
@@ -2045,7 +2050,7 @@ static int handle_invoke_result(URLContext *s, RTMPPacket *pkt)
         /* Ignore this reply when the current method is not tracked. */
         return ret;
     }
-
+    av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in handle_invoke_result, tracked_method = %s.\n", tracked_method);
     if (!strcmp(tracked_method, "connect")) {
         if (!rt->is_input) {
             if ((ret = gen_release_stream(s, rt)) < 0)
@@ -2084,6 +2089,8 @@ static int handle_invoke_result(URLContext *s, RTMPPacket *pkt)
             if ((ret = gen_publish(s, rt)) < 0)
                 goto fail;
         } else {
+            av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in handle_invoke_result, rt->live = %d, rt->playpath = %s.\n", 
+				rt->live, rt->playpath);
             if (rt->live != -1) {
                 if ((ret = gen_get_stream_length(s, rt)) < 0)
                     goto fail;
@@ -2211,6 +2218,7 @@ static int append_flv_data(RTMPContext *rt, RTMPPacket *pkt, int skip)
         rt->flv_size = rt->flv_off = 0;
         return ret;
     }
+	av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in append_flv_data, old_flv_size = %d.\n", old_flv_size);
     bytestream2_init_writer(&pbc, rt->flv_data, rt->flv_size);
     bytestream2_skip_p(&pbc, old_flv_size);
     bytestream2_put_byte(&pbc, pkt->type);
@@ -2220,6 +2228,7 @@ static int append_flv_data(RTMPContext *rt, RTMPPacket *pkt, int skip)
     bytestream2_put_be24(&pbc, 0);
     bytestream2_put_buffer(&pbc, data, size);
     bytestream2_put_be32(&pbc, size + RTMP_HEADER);
+	av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in append_flv_data, rt->flv_data = %s.\n", rt->flv_data);
 
     return 0;
 }
@@ -2236,7 +2245,7 @@ static int handle_notify(URLContext *s, RTMPPacket *pkt)
     if (ff_amf_read_string(&gbc, commandbuffer, sizeof(commandbuffer),
                            &stringlen))
         return AVERROR_INVALIDDATA;
-
+    av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in handle_notify, commandbuffer = %s.\n", commandbuffer);
     if (!strcmp(commandbuffer, "onMetaData")) {
         // metadata properties should be stored in a mixed array
         if (bytestream2_get_byte(&gbc) == AMF_DATA_TYPE_MIXEDARRAY) {
@@ -2277,6 +2286,7 @@ static int handle_notify(URLContext *s, RTMPPacket *pkt)
         if (ret < 0)
             return AVERROR_INVALIDDATA;
     }
+	av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in handle_notify, go to append_flv_data.\n");
 
     return append_flv_data(rt, pkt, skip);
 }
@@ -2352,7 +2362,7 @@ static int handle_metadata(RTMPContext *rt, RTMPPacket *pkt)
 
     /* copy data while rewriting timestamps */
     ts = pkt->timestamp;
-
+    av_log(NULL, AV_LOG_INFO, "rtmpproto PPT, in handle_metadata, pkt->size - RTMP_HEADER = %d.\n", pkt->size - RTMP_HEADER);
     while (next - pkt->data < pkt->size - RTMP_HEADER) {
         type = bytestream_get_byte(&next);
         size = bytestream_get_be24(&next);
@@ -2460,6 +2470,7 @@ static int get_packet(URLContext *s, int for_header)
             continue;
         }
         if (rpkt.type == RTMP_PT_VIDEO || rpkt.type == RTMP_PT_AUDIO) {
+			av_log(NULL, AV_LOG_INFO, "rtmpproto ppt, in get_packet, video/audio go to append_flv_data.\n");
             ret = append_flv_data(rt, &rpkt, 0);
             ff_rtmp_packet_destroy(&rpkt);
             return ret;
@@ -2882,7 +2893,7 @@ static int rtmp_read(URLContext *s, uint8_t *buf, int size)
     RTMPContext *rt = s->priv_data;
     int orig_size = size;
     int ret;
-
+    av_log(NULL, AV_LOG_INFO, "rtmp ppt, in rtmpproto.c rtmp_read, go in.\n");
     while (size > 0) {
         int data_left = rt->flv_size - rt->flv_off;
 
@@ -3063,7 +3074,7 @@ static int rtmp_write(URLContext *s, const uint8_t *buf, int size)
         return ret;
     } else if (ret == 1) {
         RTMPPacket rpkt = { 0 };
-
+        av_log(NULL, AV_LOG_INFO, "rtmp ppt, in rtmp_write, go to ff_rtmp_packet_read_internal.\n");
         if ((ret = ff_rtmp_packet_read_internal(rt->stream, &rpkt,
                                                 rt->in_chunk_size,
                                                 &rt->prev_pkt[0],

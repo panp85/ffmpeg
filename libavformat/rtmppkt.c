@@ -163,7 +163,7 @@ int ff_rtmp_packet_read(URLContext *h, RTMPPacket *p,
 
     if (ffurl_read(h, &hdr, 1) != 1)
         return AVERROR(EIO);
-
+	av_log(NULL, AV_LOG_INFO, "rtmp ppt, in ff_rtmp_packet_read, go to ff_rtmp_packet_read_internal.\n");
     return ff_rtmp_packet_read_internal(h, p, chunk_size, prev_pkt,
                                         nb_prev_pkt, hdr);
 }
@@ -184,7 +184,7 @@ static int rtmp_packet_read_one_chunk(URLContext *h, RTMPPacket *p,
 
     written++;
     channel_id = hdr & 0x3F;
-
+    av_log(NULL, AV_LOG_INFO, "rtmp ppt, in rtmp_packet_read_one_chunk, channel_id = %d.\n", channel_id);
     if (channel_id < 2) { //special case for channel number >= 64
         buf[1] = 0;
         if (ffurl_read_complete(h, buf, channel_id + 1) != channel_id + 1)

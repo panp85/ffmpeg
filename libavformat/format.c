@@ -293,6 +293,8 @@ int av_probe_input_buffer2(AVIOContext *pb, AVInputFormat **fmt,
         return AVERROR(EINVAL);
 
     if (pb->av_class) {
+		av_log(NULL, AV_LOG_INFO, "format ppt, in av_probe_input_buffer2, pb->av_class->class_name = %s.\n", 
+			pb->av_class->class_name);
         uint8_t *mime_type_opt = NULL;
         char *semi;
         av_opt_get(pb, "mime_type", AV_OPT_SEARCH_CHILDREN, &mime_type_opt);
@@ -301,6 +303,8 @@ int av_probe_input_buffer2(AVIOContext *pb, AVInputFormat **fmt,
         if (semi) {
             *semi = '\0';
         }
+		av_log(NULL, AV_LOG_INFO, "format ppt, in av_probe_input_buffer2, pd.mime_type = %s.\n", 
+			pd.mime_type);
     }
 #if 0
     if (!*fmt && pb->av_class && av_opt_get(pb, "mime_type", AV_OPT_SEARCH_CHILDREN, &mime_type) >= 0 && mime_type) {
@@ -339,6 +343,8 @@ int av_probe_input_buffer2(AVIOContext *pb, AVInputFormat **fmt,
         /* Guess file format. */
         *fmt = av_probe_input_format2(&pd, 1, &score);
         if (*fmt) {
+			av_log(NULL, AV_LOG_INFO, "format ppt, in av_probe_input_buffer2, (*fmt)->name = %s, score = %d.\n", 
+				(*fmt)->name, score);
             /* This can only be true in the last iteration. */
             if (score <= AVPROBE_SCORE_RETRY) {
                 av_log(logctx, AV_LOG_WARNING,
