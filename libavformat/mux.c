@@ -491,7 +491,10 @@ static int write_header_internal(AVFormatContext *s)
         if (ret < 0)
             return ret;
         if (s->flush_packets && s->pb && s->pb->error >= 0 && s->flags & AVFMT_FLAG_FLUSH_PACKETS)
+        {
+            av_log(0, AV_LOG_INFO, "mux panpan test, in write_header_internal, go to avio_flush.\n");
             avio_flush(s->pb);
+        }
     }
     s->internal->header_written = 1;
     if (!(s->oformat->flags & AVFMT_NOFILE) && s->pb)

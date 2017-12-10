@@ -253,6 +253,8 @@ int64_t avio_seek(AVIOContext *s, int64_t offset, int whence)
 
     if (whence == SEEK_CUR) {
         offset1 = pos + (s->buf_ptr - s->buffer);
+		av_log(NULL, AV_LOG_INFO, "aviobuf ppt, in avio_seek, offset = %d.\n", 
+			offset);
         if (offset == 0)
             return offset1;
         offset += offset1;

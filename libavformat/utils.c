@@ -746,6 +746,7 @@ int ff_read_packet(AVFormatContext *s, AVPacket *pkt)
         AVPacketList *pktl = s->internal->raw_packet_buffer;
 
         if (pktl) {
+			av_log(0, AV_LOG_INFO, "panpan test, in ff_read_packet, pktl yes.\n");
             *pkt = pktl->pkt;
             st   = s->streams[pkt->stream_index];
             if (s->internal->raw_packet_buffer_remaining_size <= 0)
@@ -829,8 +830,10 @@ int ff_read_packet(AVFormatContext *s, AVPacket *pkt)
             pkt->dts = pkt->pts = av_rescale_q(av_gettime(), AV_TIME_BASE_Q, st->time_base);
 
         if (!pktl && st->request_probe <= 0)
+        {
+            av_log(NULL, AV_LOG_INFO, "ppt, in ff_read_packet, return 1.\n");
             return ret;
-
+        }
         err = add_to_pktbuf(&s->internal->raw_packet_buffer, pkt,
                             &s->internal->raw_packet_buffer_end, 0);
         if (err)
