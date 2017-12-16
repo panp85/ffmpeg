@@ -3471,7 +3471,7 @@ static OutputStream *choose_output(void)
     for (i = 0; i < nb_output_streams; i++) {
         OutputStream *ost = output_streams[i];
         int64_t opts = ost->st->cur_dts == AV_NOPTS_VALUE ? INT64_MIN :
-                       av_rescale_q(ost->st->cur_dts, ost->st->time_base,
+                       av_rescale_q(ost->st->cur_dts, ost->st->time_base,//cur_dts输出流的解码时间
                                     AV_TIME_BASE_Q);
         if (ost->st->cur_dts == AV_NOPTS_VALUE)
             av_log(NULL, AV_LOG_DEBUG, "cur_dts is invalid (this is harmless if it occurs once at the start per stream)\n");
@@ -3618,6 +3618,7 @@ static void *input_thread(void *arg)
 
     while (1) {
         AVPacket pkt;
+		av_log(NULL, AV_LOG_INFO, "input_thread ppt, in input_thread, go to av_read_frame.\n");
         ret = av_read_frame(f->ctx, &pkt);
 
         if (ret == AVERROR(EAGAIN)) {
