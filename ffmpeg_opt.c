@@ -1194,9 +1194,7 @@ static int choose_encoder(OptionsContext *o, AVFormatContext *s, OutputStream *o
                                                       NULL, ost->st->codec->codec_type);
 			
             ost->enc = avcodec_find_encoder(ost->st->codec->codec_id);
-			av_log(NULL, AV_LOG_FATAL, 
-				"panpan test, in choose_encoder, ost->st->codec->codec_id = %d, ost->enc->name = %s.\n", 
-				ost->st->codec->codec_id, ost->enc->name);
+			
             if (!ost->enc) {
                 av_log(NULL, AV_LOG_FATAL, "Automatic encoder selection failed for "
                        "output stream #%d:%d. Default encoder for format %s (codec %s) is "
@@ -1205,6 +1203,11 @@ static int choose_encoder(OptionsContext *o, AVFormatContext *s, OutputStream *o
                        avcodec_get_name(ost->st->codec->codec_id));
                 return AVERROR_ENCODER_NOT_FOUND;
             }
+			else{
+				av_log(NULL, AV_LOG_FATAL, 
+				    "panpan test, in choose_encoder, ost->st->codec->codec_id = %d, ost->enc->name = %s.\n", 
+				    ost->st->codec->codec_id, ost->enc->name);
+			}
         } else if (!strcmp(codec_name, "copy"))
             ost->stream_copy = 1;
         else {

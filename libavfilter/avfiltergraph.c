@@ -1393,15 +1393,16 @@ int avfilter_graph_request_oldest(AVFilterGraph *graph)
 {
     AVFilterLink *oldest = graph->sink_links[0];
     int r;
-    av_log(NULL, AV_LOG_ERROR, 
+/*    av_log(NULL, AV_LOG_ERROR, 
 		"panpan test, in avfilter_graph_request_oldest, graph->sink_links_count = %d.\n",
-		graph->sink_links_count);
+		graph->sink_links_count);*/
     while (graph->sink_links_count) {
         oldest = graph->sink_links[0];
 		av_log(NULL, AV_LOG_ERROR, 
 			"panpan test, in avfilter_graph_request_oldest, oldest->dst,oldest->dstpad = [%s, %s].\n",
 			oldest->dst ? oldest->dst->name : "unknown",
 			oldest->dstpad ? oldest->dstpad->name : "unknown");
+			
         r = ff_request_frame(oldest);
         if (r != AVERROR_EOF)
             break;
@@ -1417,6 +1418,9 @@ int avfilter_graph_request_oldest(AVFilterGraph *graph)
     if (!graph->sink_links_count)
         return AVERROR_EOF;
     av_assert1(oldest->age_index >= 0);
+	av_log(NULL, AV_LOG_ERROR, 
+		"panpan test, in avfilter_graph_request_oldest, graph->frame_wanted_out = %d.\n",
+		oldest->frame_wanted_out);
     while (oldest->frame_wanted_out) {
 		av_log(NULL, AV_LOG_ERROR, "panpan test, in avfilter_graph_request_oldest, in while.\n");
         r = ff_filter_graph_run_once(graph);

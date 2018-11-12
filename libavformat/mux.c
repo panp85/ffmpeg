@@ -1253,11 +1253,12 @@ int av_write_trailer(AVFormatContext *s)
         if (ret < 0)
             goto fail;
     }
-
+	av_log(NULL, AV_LOG_INFO, "mux ppt,no error, in av_write_trailer.\n");
 fail:
     if (s->internal->header_written && s->oformat->write_trailer) {
         if (!(s->oformat->flags & AVFMT_NOFILE) && s->pb)
             avio_write_marker(s->pb, AV_NOPTS_VALUE, AVIO_DATA_MARKER_TRAILER);
+		av_log(NULL, AV_LOG_INFO, "mux ppt, in av_write_trailer, ret = %d, go to s->oformat->write_trailer.\n");
         if (ret >= 0) {
         ret = s->oformat->write_trailer(s);
         } else {

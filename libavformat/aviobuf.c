@@ -245,14 +245,18 @@ int64_t avio_seek(AVIOContext *s, int64_t offset, int whence)
         return AVERROR(EINVAL);
 
     buffer_size = s->buf_end - s->buffer;
+	
     // pos is the absolute position that the beginning of s->buffer corresponds to in the file
-    pos = s->pos - (s->write_flag ? 0 : buffer_size);
+    pos = s->pos - (s->write_flag ? 0 : buffer_size);//相对文件，s->pos是指s->buf_end在文件中的位置，pos局部变量是s->buffer在文件中的位置?
+	av_log(NULL, AV_LOG_INFO, 
+		"avio_seek ppt, in avio_seek, s->pos, s->write_flag, offset, whence, pos: %ld, %d, %ld, %d, %ld.\n", 
+		s->pos, s->write_flag, offset, whence, pos);
 
     if (whence != SEEK_CUR && whence != SEEK_SET)
         return AVERROR(EINVAL);
 
-    if (whence == SEEK_CUR) {
-        offset1 = pos + (s->buf_ptr - s->buffer);
+    if (whence == SEEK_CUR) {//SEEK_CUR = 1
+        offset1 = pos + (s->buf_ptr - s->buffer);//buf_ptr在文件中的位置
 		av_log(NULL, AV_LOG_INFO, "aviobuf ppt, in avio_seek, offset = %d.\n", 
 			offset);
         if (offset == 0)
@@ -263,8 +267,12 @@ int64_t avio_seek(AVIOContext *s, int64_t offset, int whence)
         return AVERROR(EINVAL);
 
     offset1 = offset - pos; // "offset1" is the relative offset from the beginning of s->buffer
+    av_log(NULL, AV_LOG_INFO, 
+		"avio_seek ppt, in avio_seek, s->pos, s->write_flag, offset: %ld, %d, %ld, %ld, offset1: %ld, %d, %d, %s, s->seekable: %d.\n", 
+		s->pos, s->write_flag, pos, offset, offset1, s->must_flush, s->direct, s->seek?"yes":"no", s->seekable);
     if (!s->must_flush && (!s->direct || !s->seek) &&
         offset1 >= 0 && offset1 <= buffer_size - s->write_flag) {
+        av_log(NULL, AV_LOG_INFO, "avio_seek ppt, do avio_seek 1.\n");
         /* can do the seek inside the buffer */
         s->buf_ptr = s->buffer + offset1;
     } else if ((!s->seekable ||
@@ -272,6 +280,7 @@ int64_t avio_seek(AVIOContext *s, int64_t offset, int whence)
                !s->write_flag && offset1 >= 0 &&
                (!s->direct || !s->seek) &&
               (whence != SEEK_END || force)) {
+        av_log(NULL, AV_LOG_INFO, "avio_seek ppt, do avio_seek 2.\n");
         while(s->pos < offset && !s->eof_reached)
             fill_buffer(s);
         if (s->eof_reached)
@@ -279,6 +288,7 @@ int64_t avio_seek(AVIOContext *s, int64_t offset, int whence)
         s->buf_ptr = s->buf_end - (s->pos - offset);
     } else if(!s->write_flag && offset1 < 0 && -offset1 < buffer_size>>1 && s->seek && offset > 0) {
         int64_t res;
+		av_log(NULL, AV_LOG_INFO, "avio_seek ppt, do avio_seek 3.\n");
 
         pos -= FFMIN(buffer_size>>1, pos);
         if ((res = s->seek(s->opaque, pos, SEEK_SET)) < 0)
@@ -291,6 +301,7 @@ int64_t avio_seek(AVIOContext *s, int64_t offset, int whence)
         return avio_seek(s, offset, SEEK_SET | force);
     } else {
         int64_t res;
+		av_log(NULL, AV_LOG_INFO, "avio_seek ppt, do avio_seek 4.\n");
         if (s->write_flag) {
             flush_buffer(s);
             s->must_flush = 1;

@@ -767,7 +767,10 @@ redo:
         if (ret < 0)
             return ret;
         if (ret == 1) /* received '$' */
+        {
+            av_log(NULL, AV_LOG_INFO, "rtsp ppt, in ff_rtsp_tcp_read_packet, is '$'.\n");
             break;
+        }
         /* XXX: parse message */
         if (rt->state != RTSP_STATE_STREAMING)
             return 0;

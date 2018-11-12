@@ -667,10 +667,12 @@ static int rtp_parse_packet_internal(RTPDemuxContext *s, AVPacket *pkt,
     }
 
     if (s->handler && s->handler->parse_packet) {
+		av_log(NULL, AV_LOG_INFO, "rtsp ppt, in rtp_parse_packet_internal, enc_name: %s.\n", s->handler->enc_name);
         rv = s->handler->parse_packet(s->ic, s->dynamic_protocol_context,
                                       s->st, pkt, &timestamp, buf, len, seq,
                                       flags);
     } else if (st) {
+		av_log(NULL, AV_LOG_INFO, "rtsp ppt, in rtp_parse_packet_internal, 2.\n");
         if ((rv = av_new_packet(pkt, len)) < 0)
             return rv;
         memcpy(pkt->data, buf, len);

@@ -1,0 +1,127 @@
+fribidi.lo: fribidi.c /usr/include/stdc-predef.h common.h ../config.h \
+ fribidi-common.h fribidi-config.h /usr/include/stdlib.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/5/include/stddef.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h /usr/include/string.h \
+ /usr/include/x86_64-linux-gnu/bits/string.h \
+ /usr/include/x86_64-linux-gnu/bits/string2.h /usr/include/endian.h \
+ /usr/include/x86_64-linux-gnu/bits/endian.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/string3.h /usr/include/strings.h \
+ debug.h fribidi-types.h fribidi-common.h fribidi-begindecls.h \
+ /usr/lib/gcc/x86_64-linux-gnu/5/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h fribidi-enddecls.h \
+ fribidi-begindecls.h fribidi-enddecls.h fribidi.h fribidi-unicode.h \
+ fribidi-types.h fribidi-unicode-version.h fribidi-flags.h \
+ fribidi-bidi-types.h fribidi-bidi-types-list.h fribidi-bidi.h \
+ fribidi-joining-types.h fribidi-joining-types-list.h fribidi-joining.h \
+ fribidi-mirroring.h fribidi-brackets.h fribidi-arabic.h fribidi-shape.h \
+ ../charset/fribidi-char-sets.h ../charset/fribidi-char-sets-list.h
+
+/usr/include/stdc-predef.h:
+
+common.h:
+
+../config.h:
+
+fribidi-common.h:
+
+fribidi-config.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/features.h:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
+/usr/include/x86_64-linux-gnu/bits/wordsize.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/5/include/stddef.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib.h:
+
+/usr/include/string.h:
+
+/usr/include/x86_64-linux-gnu/bits/string.h:
+
+/usr/include/x86_64-linux-gnu/bits/string2.h:
+
+/usr/include/endian.h:
+
+/usr/include/x86_64-linux-gnu/bits/endian.h:
+
+/usr/include/x86_64-linux-gnu/bits/types.h:
+
+/usr/include/x86_64-linux-gnu/bits/typesizes.h:
+
+/usr/include/x86_64-linux-gnu/bits/string3.h:
+
+/usr/include/strings.h:
+
+debug.h:
+
+fribidi-types.h:
+
+fribidi-common.h:
+
+fribidi-begindecls.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/5/include/stdint.h:
+
+/usr/include/stdint.h:
+
+/usr/include/x86_64-linux-gnu/bits/wchar.h:
+
+fribidi-enddecls.h:
+
+fribidi-begindecls.h:
+
+fribidi-enddecls.h:
+
+fribidi.h:
+
+fribidi-unicode.h:
+
+fribidi-types.h:
+
+fribidi-unicode-version.h:
+
+fribidi-flags.h:
+
+fribidi-bidi-types.h:
+
+fribidi-bidi-types-list.h:
+
+fribidi-bidi.h:
+
+fribidi-joining-types.h:
+
+fribidi-joining-types-list.h:
+
+fribidi-joining.h:
+
+fribidi-mirroring.h:
+
+fribidi-brackets.h:
+
+fribidi-arabic.h:
+
+fribidi-shape.h:
+
+../charset/fribidi-char-sets.h:
+
+../charset/fribidi-char-sets-list.h:

@@ -858,7 +858,7 @@ static int configure_input_video_filter(FilterGraph *fg, InputFilter *ifilter,
     if (ret < 0)
         return ret;
 
-    if ((ret = avfilter_link(last_filter, 0, in->filter_ctx, in->pad_idx)) < 0)
+    if ((ret = avfilter_link(last_filter, 0, in->filter_ctx, in->pad_idx)) < 0)//视频，把in_filter_ctx放在最后
         return ret;
     return 0;
 fail:

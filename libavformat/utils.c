@@ -95,6 +95,8 @@ static int is_relative(int64_t ts) {
  */
 static int64_t wrap_timestamp(const AVStream *st, int64_t timestamp)
 {
+    av_log(NULL, AV_LOG_INFO, "wrap ppt, in wrap_timestamp, st->pts_wrap_behavior, timestamp = %ld, %ld.\n", 
+		st->pts_wrap_behavior, timestamp);
     if (st->pts_wrap_behavior != AV_PTS_WRAP_IGNORE &&
         st->pts_wrap_reference != AV_NOPTS_VALUE && timestamp != AV_NOPTS_VALUE) {
         if (st->pts_wrap_behavior == AV_PTS_WRAP_ADD_OFFSET &&
@@ -387,7 +389,7 @@ static int init_input(AVFormatContext *s, const char *filename,
         return ret;
     if (s->iformat)
         return 0;
-    av_log(NULL, AV_LOG_ERROR, "panpan test, in init_input 4, go to av_probe_input_buffer2£¬ s->format_probesize = %d.\n", 
+    av_log(NULL, AV_LOG_ERROR, "panpan test, in init_input 4, go to av_probe_input_buffer2, s->format_probesize = %d.\n", 
 		s->format_probesize);
     return av_probe_input_buffer2(s->pb, &s->iformat, filename,
                                  s, 0, s->format_probesize);
@@ -680,6 +682,10 @@ static int update_wrap_reference(AVFormatContext *s, AVStream *st, int stream_in
 
     if (ref == AV_NOPTS_VALUE)
         ref = pkt->pts;
+	av_log(NULL, AV_LOG_INFO, 
+		"wrap ppt, in updata_wrap_reference, st->pts_wrap_reference, st->pts_wrap_bits, s->correct_ts_overflow = %ld, %d, %u.\n", 
+		st->pts_wrap_reference, st->pts_wrap_bits, s->correct_ts_overflow);
+	
     if (st->pts_wrap_reference != AV_NOPTS_VALUE || st->pts_wrap_bits >= 63 || ref == AV_NOPTS_VALUE || !s->correct_ts_overflow)
         return 0;
     ref &= (1LL << st->pts_wrap_bits)-1;

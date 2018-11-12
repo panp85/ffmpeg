@@ -413,7 +413,7 @@ av_cold int ff_h264_decode_init(AVCodecContext *avctx)
             h->avctx->time_base.num /= 2;
     }
     avctx->ticks_per_frame = 2;
-
+    av_log(NULL, AV_LOG_INFO, "ffmpet ppt, in ff_h264_decode_init, avctx->extradata_size = %d.\n", avctx->extradata_size);
     if (avctx->extradata_size > 0 && avctx->extradata) {
         ret = ff_h264_decode_extradata(avctx->extradata, avctx->extradata_size,
                                        &h->ps, &h->is_avc, &h->nal_length_size,

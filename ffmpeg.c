@@ -1361,10 +1361,14 @@ static int reap_filters(int flush)
                 float_pts /= 1 << extra_bits;
                 // avoid exact midoints to reduce the chance of rounding differences, this can be removed in case the fps code is changed to work with integers
                 float_pts += FFSIGN(float_pts) * 1.0 / (1<<17);
-
+				av_log(NULL, AV_LOG_INFO, 
+					"ppt, in reap_filters, filtered_frame->pts[1] = %llu, filter->inputs[0]->time_base: [%d, %d] , enc->time_base = [%d,%d].\n", 
+					filtered_frame->pts, filter->inputs[0]->time_base.num, filter->inputs[0]->time_base.num, enc->time_base.num, enc->time_base.den);
                 filtered_frame->pts =
                     av_rescale_q(filtered_frame->pts, filter->inputs[0]->time_base, enc->time_base) -
                     av_rescale_q(start_time, AV_TIME_BASE_Q, enc->time_base);
+				av_log(NULL, AV_LOG_INFO, "ppt, in reap_filters, filtered_frame->pts[2] = %llu, float_pts = %lf.\n", 
+					filtered_frame->pts, float_pts);
             }
             //if (ost->source_index >= 0)
             //    *filtered_frame= *input_streams[ost->source_index]->decoded_frame; //for me_threshold
@@ -2102,6 +2106,7 @@ static int decode_video(InputStream *ist, AVPacket *pkt, int *got_output)
     pkt->dts  = av_rescale_q(ist->dts, AV_TIME_BASE_Q, ist->st->time_base);
 
     update_benchmark(NULL);
+	av_log(NULL, AV_LOG_INFO, "ffmpeg ppt, in decode_video, go to avcodec_decode_video2.\n");
     ret = avcodec_decode_video2(ist->dec_ctx,
                                 decoded_frame, got_output, pkt);
     update_benchmark("decode_video %d.%d", ist->file_index, ist->st->index);
@@ -2355,7 +2360,7 @@ static int process_input_packet(InputStream *ist, const AVPacket *pkt, int no_eo
                    "Multiple frames in a packet from stream %d\n", pkt->stream_index);
             ist->showed_multi_packet_warning = 1;
         }
-
+        av_log(NULL, AV_LOG_INFO, "ffmpeg ppt, in process_input_packet, ist->dec_ctx->codec_type = %d.\n", ist->dec_ctx->codec_type);
         switch (ist->dec_ctx->codec_type) {
         case AVMEDIA_TYPE_AUDIO:
             ret = decode_audio    (ist, &avpkt, &got_output);
@@ -3917,7 +3922,7 @@ static int process_input(int file_index)
         exit_program(1);
     }
 
-    if (debug_ts) {
+    if (1/*debug_ts*/) {
         av_log(NULL, AV_LOG_INFO, "demuxer -> ist_index:%d type:%s "
                "next_dts:%s next_dts_time:%s next_pts:%s next_pts_time:%s pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s off:%s off_time:%s\n",
                ifile->ist_index + pkt.stream_index, av_get_media_type_string(ist->dec_ctx->codec_type),
@@ -3989,7 +3994,7 @@ static int process_input(int file_index)
             memcpy(dst_data, src_sd->data, src_sd->size);
         }
     }
-    av_log(NULL, AV_LOG_INFO, "panpan test, in process_input, ifile->ts_offset = %d.\n", (int)ifile->ts_offset);
+    av_log(NULL, AV_LOG_INFO, "panpan test, in process_input, ifile->ts_offset = %lld.\n", (int)ifile->ts_offset);
     if (pkt.dts != AV_NOPTS_VALUE)
         pkt.dts += av_rescale_q(ifile->ts_offset, AV_TIME_BASE_Q, ist->st->time_base);
     if (pkt.pts != AV_NOPTS_VALUE)
@@ -4068,7 +4073,7 @@ static int process_input(int file_index)
     if (pkt.dts != AV_NOPTS_VALUE)
         ifile->last_ts = av_rescale_q(pkt.dts, ist->st->time_base, AV_TIME_BASE_Q);
 
-    if (debug_ts) {
+    if (1/*debug_ts*/) {
         av_log(NULL, AV_LOG_INFO, "demuxer+ffmpeg -> ist_index:%d type:%s pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s off:%s off_time:%s\n",
                ifile->ist_index + pkt.stream_index, av_get_media_type_string(ist->dec_ctx->codec_type),
                av_ts2str(pkt.pts), av_ts2timestr(pkt.pts, &ist->st->time_base),
@@ -4078,7 +4083,7 @@ static int process_input(int file_index)
     }
 
     sub2video_heartbeat(ist, pkt.pts);
-
+    av_log(NULL, AV_LOG_INFO, "ffmpeg ppt, in process_input, go to process_input_packet.\n");
     process_input_packet(ist, &pkt, 0);
 
 discard_packet:

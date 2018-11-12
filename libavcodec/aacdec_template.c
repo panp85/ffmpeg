@@ -3153,7 +3153,8 @@ static int aac_decode_frame(AVCodecContext *avctx, void *data,
 
     if ((err = init_get_bits8(&gb, buf, buf_size)) < 0)
         return err;
-
+    av_log(NULL, AV_LOG_INFO, "aac ppt, in aac_decode_frame, ac->oc[1].m4ac.object_type = %d, jp_dualmono = %p, new_extradata = %p.\n", 
+        ac->oc[1].m4ac.object_type, jp_dualmono, new_extradata);
     switch (ac->oc[1].m4ac.object_type) {
     case AOT_ER_AAC_LC:
     case AOT_ER_AAC_LTP:

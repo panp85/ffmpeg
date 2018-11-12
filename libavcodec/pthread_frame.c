@@ -133,10 +133,12 @@ static attribute_align_arg void *frame_worker_thread(void *arg)
 
     pthread_mutex_lock(&p->mutex);
     while (1) {
+		//av_log(0, AV_LOG_INFO, "panpan test, in frame_worker_thread, in while, 1 codec->name: %s, %s.\n", avctx->codec->name,
+		//	avctx->codec->long_name);
             while (p->state == STATE_INPUT_READY && !p->die)
                 pthread_cond_wait(&p->input_cond, &p->mutex);
-        av_log(0, AV_LOG_INFO, "panpan test, in frame_worker_thread, in while, codec->name: %s, %s.\n", avctx->codec->name,
-			avctx->codec->long_name);
+        //av_log(0, AV_LOG_INFO, "panpan test, in frame_worker_thread, in while, 2 codec->name: %s, %s.\n", avctx->codec->name,
+		//	avctx->codec->long_name);
         if (p->die) break;
 
         if (!codec->update_thread_context && THREAD_SAFE_CALLBACKS(avctx))
@@ -341,7 +343,7 @@ static int submit_packet(PerThreadContext *p, AVPacket *avpkt)
     av_packet_ref(&p->avpkt, avpkt);
 
     p->state = STATE_SETTING_UP;
-    pthread_cond_signal(&p->input_cond);
+    pthread_cond_signal(&p->input_cond);//唤醒
     pthread_mutex_unlock(&p->mutex);
 
     /*

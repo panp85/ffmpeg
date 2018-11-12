@@ -538,7 +538,7 @@ static int flv_write_trailer(AVFormatContext *s)
     }
 
     file_size = avio_tell(pb);
-
+    av_log(NULL, AV_LOG_INFO, "wirte trailer ppt, in flv_write_trainler, flv->duration_offset = %ld.\n", flv->duration_offset);
     /* update information */
     if (avio_seek(pb, flv->duration_offset, SEEK_SET) < 0)
         av_log(s, AV_LOG_WARNING, "Failed to update header with correct duration.\n");

@@ -1217,7 +1217,10 @@ int attribute_align_arg avcodec_open2(AVCodecContext *avctx, const AVCodec *code
     int ret = 0;
     AVDictionary *tmp = NULL;
     const AVPixFmtDescriptor *pixdesc;
-    av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_open2, codec->name = %s.\n", codec->name);
+	if(codec)
+	{
+        av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_open2, codec->name = %s.\n", codec->name);
+	}
     if (avcodec_is_open(avctx))
     {
         av_log(NULL, AV_LOG_ERROR, "panpan test, in avcodec_open2, avcodec_is_open yes.\n");
@@ -2083,7 +2086,7 @@ static int apply_param_change(AVCodecContext *avctx, AVPacket *avpkt)
     data = av_packet_get_side_data(avpkt, AV_PKT_DATA_PARAM_CHANGE, &size);
     if (!data)
         return 0;
-
+    av_log(NULL, AV_LOG_INFO, "utils ppt, in apply_param_change, 1.\n");
     if (!(avctx->codec->capabilities & AV_CODEC_CAP_PARAM_CHANGE)) {
         av_log(avctx, AV_LOG_ERROR, "This decoder does not support parameter "
                "changes, but PARAM_CHANGE side data was sent to it.\n");
@@ -2346,9 +2349,15 @@ int attribute_align_arg avcodec_decode_audio4(AVCodecContext *avctx,
             goto fail;
 
         avctx->internal->pkt = &tmp;
+		
         if (HAVE_THREADS && avctx->active_thread_type & FF_THREAD_FRAME)
+        {
+            av_log(NULL, AV_LOG_INFO, "decode ppt, in avcodec_decode_audio4, go to ff_thread_decode_frame.\n");
             ret = ff_thread_decode_frame(avctx, frame, got_frame_ptr, &tmp);
+        }
         else {
+			av_log(NULL, AV_LOG_INFO, "decode ppt, in avcodec_decode_audio4, go to avctx->codec->decode, avctx->codec->name = %s.\n", 
+				avctx->codec->name);
             ret = avctx->codec->decode(avctx, frame, got_frame_ptr, &tmp);
             av_assert0(ret <= tmp.size);
             frame->pkt_dts = avpkt->dts;
